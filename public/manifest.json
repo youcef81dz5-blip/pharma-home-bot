@@ -1,0 +1,20 @@
+{
+  "name": "صيدلي البيت - PHARMA HOME",
+  "short_name": "صيدلي البيت",
+  "description": "تحليل الأدوية والمكملات الغذائية بالذكاء الاصطناعي",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f6f3",
+  "theme_color": "#0d9373",
+  "orientation": "portrait",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["health", "medical", "utilities"]
+}
