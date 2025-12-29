@@ -1,8 +1,9 @@
 import { useState, useRef, useCallback } from "react";
-import { Camera, Upload, Image as ImageIcon, X, Loader2, Pill } from "lucide-react";
+import { Camera, Upload, Image as ImageIcon, X, Loader2, Pill, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface ImageUploaderProps {
   onImageSelect: (base64: string) => void;
@@ -18,6 +19,8 @@ const labels = {
     analyzing: "جاري التحليل...",
     analyze: "تحليل المكونات",
     imageAlt: "صورة الدواء",
+    photoTip: "نصيحة للتصوير الأمثل",
+    photoTipText: "تأكد من إضاءة جيدة وتجنب الظلال. صوّر المكونات بشكل واضح مع تجنب تأثير Vignette (الحواف الداكنة). ضع الدواء على خلفية فاتحة وموحدة للحصول على أفضل نتائج التحليل.",
   },
   en: {
     uploadTitle: "Upload Medicine Image",
@@ -27,6 +30,8 @@ const labels = {
     analyzing: "Analyzing...",
     analyze: "Analyze Ingredients",
     imageAlt: "Medicine image",
+    photoTip: "Photo Tips",
+    photoTipText: "Ensure good lighting and avoid shadows. Capture ingredients clearly without vignette effect (dark edges). Place medicine on a light, uniform background for best analysis results.",
   },
   fr: {
     uploadTitle: "Télécharger l'Image du Médicament",
@@ -36,6 +41,8 @@ const labels = {
     analyzing: "Analyse en cours...",
     analyze: "Analyser les Ingrédients",
     imageAlt: "Image du médicament",
+    photoTip: "Conseils Photo",
+    photoTipText: "Assurez un bon éclairage et évitez les ombres. Capturez les ingrédients clairement sans effet vignette (bords sombres). Placez le médicament sur un fond clair et uniforme pour de meilleurs résultats.",
   },
 };
 
@@ -165,6 +172,14 @@ export function ImageUploader({ onImageSelect, isLoading }: ImageUploaderProps) 
               <span>{l.cameraBtn}</span>
             </Button>
           </div>
+
+          <Alert className="mt-4 border-primary/30 bg-primary/5">
+            <Lightbulb className="h-4 w-4 text-primary" />
+            <AlertTitle className="text-primary font-semibold">{l.photoTip}</AlertTitle>
+            <AlertDescription className="text-muted-foreground text-sm">
+              {l.photoTipText}
+            </AlertDescription>
+          </Alert>
         </div>
       ) : (
         <div className="fade-in-up space-y-4">
