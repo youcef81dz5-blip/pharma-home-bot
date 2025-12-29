@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      medicine_inventory: {
+        Row: {
+          created_at: string
+          expiry_date: string | null
+          id: string
+          image_url: string | null
+          manufacturer: string | null
+          name_ar: string
+          notes: string | null
+          primary_use: string | null
+          quantity: number
+          scientific_name: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          image_url?: string | null
+          manufacturer?: string | null
+          name_ar: string
+          notes?: string | null
+          primary_use?: string | null
+          quantity?: number
+          scientific_name?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          image_url?: string | null
+          manufacturer?: string | null
+          name_ar?: string
+          notes?: string | null
+          primary_use?: string | null
+          quantity?: number
+          scientific_name?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
