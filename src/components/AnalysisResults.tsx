@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { AnalysisResult } from "@/types/analysis";
 import {
   CheckCircle2,
@@ -9,14 +10,54 @@ import {
   FileWarning,
   Stethoscope,
   Info,
+  PackagePlus,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 interface AnalysisResultsProps {
   result: AnalysisResult;
+  imageBase64?: string;
 }
 
-export function AnalysisResults({ result }: AnalysisResultsProps) {
+const translations = {
+  ar: {
+    addToInventory: "إضافة للمخزون",
+    adding: "جاري الإضافة...",
+    addSuccess: "تمت إضافة الدواء للمخزون بنجاح",
+    addError: "حدث خطأ أثناء الإضافة",
+    loginRequired: "يجب تسجيل الدخول أولاً",
+    goToLogin: "تسجيل الدخول",
+  },
+  en: {
+    addToInventory: "Add to Inventory",
+    adding: "Adding...",
+    addSuccess: "Medicine added to inventory successfully",
+    addError: "Error adding medicine",
+    loginRequired: "Please login first",
+    goToLogin: "Go to Login",
+  },
+  fr: {
+    addToInventory: "Ajouter à l'inventaire",
+    adding: "Ajout en cours...",
+    addSuccess: "Médicament ajouté avec succès",
+    addError: "Erreur lors de l'ajout",
+    loginRequired: "Veuillez vous connecter",
+    goToLogin: "Se connecter",
+  },
+};
+
+export function AnalysisResults({ result, imageBase64 }: AnalysisResultsProps) {
+  const { language } = useLanguage();
+  const navigate = useNavigate();
+  const [isAdding, setIsAdding] = useState(false);
+  const t = translations[language];
+
   const getExpiryStatusColor = (status: string) => {
     switch (status) {
       case "آمن":
@@ -41,8 +82,87 @@ export function AnalysisResults({ result }: AnalysisResultsProps) {
     }
   };
 
+  const parseExpiryDate = (dateStr: string): string | null => {
+    // Try to parse various date formats
+    const formats = [
+      /(\d{4})-(\d{2})-(\d{2})/, // YYYY-MM-DD
+      /(\d{2})\/(\d{2})\/(\d{4})/, // DD/MM/YYYY
+      /(\d{2})-(\d{2})-(\d{4})/, // DD-MM-YYYY
+    ];
+    
+    for (const format of formats) {
+      const match = dateStr.match(format);
+      if (match) {
+        if (format === formats[0]) {
+          return `${match[1]}-${match[2]}-${match[3]}`;
+        } else {
+          return `${match[3]}-${match[2]}-${match[1]}`;
+        }
+      }
+    }
+    return null;
+  };
+
+  const handleAddToInventory = async () => {
+    setIsAdding(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast.error(t.loginRequired, {
+          action: {
+            label: t.goToLogin,
+            onClick: () => navigate("/auth"),
+          },
+        });
+        setIsAdding(false);
+        return;
+      }
+
+      const expiryDate = parseExpiryDate(result.expiry_analytics.expiry_date);
+
+      const { error } = await supabase.from("medicine_inventory").insert({
+        user_id: user.id,
+        name_ar: result.product_summary.name_ar,
+        scientific_name: result.product_summary.scientific_name,
+        manufacturer: result.product_summary.manufacturer,
+        primary_use: result.product_summary.primary_use,
+        expiry_date: expiryDate,
+        quantity: 1,
+        image_url: imageBase64 || null,
+        notes: result.detailed_medical_report.indications.join("، "),
+      });
+
+      if (error) throw error;
+
+      toast.success(t.addSuccess);
+    } catch (error) {
+      console.error("Error adding to inventory:", error);
+      toast.error(t.addError);
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
   return (
     <div className="space-y-6 fade-in-up">
+      {/* Add to Inventory Button */}
+      <div className="flex justify-center">
+        <Button 
+          onClick={handleAddToInventory} 
+          disabled={isAdding}
+          className="w-full sm:w-auto gap-2"
+          size="lg"
+        >
+          {isAdding ? (
+            <Loader2 className="h-5 w-5 animate-spin" />
+          ) : (
+            <PackagePlus className="h-5 w-5" />
+          )}
+          {isAdding ? t.adding : t.addToInventory}
+        </Button>
+      </div>
+
       {/* Product Summary */}
       <section className="glass-card rounded-2xl p-5">
         <div className="flex items-center gap-3 mb-4">
