@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { MedicineCard } from "@/components/MedicineCard";
 import { AddMedicineDialog } from "@/components/AddMedicineDialog";
+import { ThemeLanguageToggle } from "@/components/ThemeLanguageToggle";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Plus, Search, Package, AlertTriangle, LogOut } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 
@@ -29,6 +30,7 @@ export default function Inventory() {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t, dir } = useLanguage();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -69,8 +71,8 @@ export default function Inventory() {
       console.error("Error fetching medicines:", error);
       toast({
         variant: "destructive",
-        title: "خطأ",
-        description: "فشل في تحميل بيانات المخزون",
+        title: t("error"),
+        description: t("loadError"),
       });
     } finally {
       setLoading(false);
@@ -92,14 +94,14 @@ export default function Inventory() {
       if (error) throw error;
       setMedicines(medicines.filter((m) => m.id !== id));
       toast({
-        title: "تم الحذف",
-        description: "تم حذف الدواء من المخزون",
+        title: t("deleted"),
+        description: t("deletedDesc"),
       });
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "خطأ",
-        description: "فشل في حذف الدواء",
+        title: t("error"),
+        description: t("deleteError"),
       });
     }
   };
@@ -132,7 +134,7 @@ export default function Inventory() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" dir={dir}>
       <header className="sticky top-0 z-50 glass-card border-b border-border/50">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
@@ -140,13 +142,16 @@ export default function Inventory() {
               <Package className="h-5 w-5 text-primary-foreground" />
             </div>
             <div className="flex flex-col">
-              <span className="text-lg font-bold text-foreground">مخزون الأدوية</span>
-              <span className="text-xs text-muted-foreground">إدارة أدوية المنزل</span>
+              <span className="text-lg font-bold text-foreground">{t("medicineInventory")}</span>
+              <span className="text-xs text-muted-foreground">{t("manageHomeMedicine")}</span>
             </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={handleLogout}>
-            <LogOut className="h-5 w-5" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <ThemeLanguageToggle />
+            <Button variant="ghost" size="icon" onClick={handleLogout}>
+              <LogOut className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -155,15 +160,15 @@ export default function Inventory() {
         <div className="grid grid-cols-3 gap-3 mb-6">
           <div className="glass-card rounded-xl p-4 text-center border border-border/50">
             <p className="text-2xl font-bold text-primary">{medicines.length}</p>
-            <p className="text-xs text-muted-foreground">إجمالي الأدوية</p>
+            <p className="text-xs text-muted-foreground">{t("totalMedicines")}</p>
           </div>
           <div className="glass-card rounded-xl p-4 text-center border border-warning/30 bg-warning/5">
             <p className="text-2xl font-bold text-warning">{expiringMedicines.length}</p>
-            <p className="text-xs text-muted-foreground">قريب الانتهاء</p>
+            <p className="text-xs text-muted-foreground">{t("expiringSoon")}</p>
           </div>
           <div className="glass-card rounded-xl p-4 text-center border border-destructive/30 bg-destructive/5">
             <p className="text-2xl font-bold text-destructive">{expiredMedicines.length}</p>
-            <p className="text-xs text-muted-foreground">منتهي الصلاحية</p>
+            <p className="text-xs text-muted-foreground">{t("expired")}</p>
           </div>
         </div>
 
@@ -174,7 +179,7 @@ export default function Inventory() {
               <div className="flex items-center gap-2 rounded-lg bg-destructive/10 border border-destructive/30 p-3">
                 <AlertTriangle className="h-5 w-5 text-destructive" />
                 <p className="text-sm text-destructive">
-                  لديك {expiredMedicines.length} دواء منتهي الصلاحية!
+                  {t("expiredAlert", { count: expiredMedicines.length })}
                 </p>
               </div>
             )}
@@ -182,7 +187,7 @@ export default function Inventory() {
               <div className="flex items-center gap-2 rounded-lg bg-warning/10 border border-warning/30 p-3">
                 <AlertTriangle className="h-5 w-5 text-warning" />
                 <p className="text-sm text-warning">
-                  لديك {expiringMedicines.length} دواء يقترب من انتهاء صلاحيته
+                  {t("expiringAlert", { count: expiringMedicines.length })}
                 </p>
               </div>
             )}
@@ -192,12 +197,12 @@ export default function Inventory() {
         {/* Search and Add */}
         <div className="flex gap-3 mb-6">
           <div className="relative flex-1">
-            <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground rtl:right-3 ltr:left-3" />
             <Input
-              placeholder="ابحث عن دواء..."
+              placeholder={t("searchMedicine")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pr-10"
+              className="px-10"
             />
           </div>
           <Button onClick={() => setShowAddDialog(true)}>
@@ -210,7 +215,7 @@ export default function Inventory() {
           <div className="text-center py-12">
             <Package className="h-16 w-16 text-muted-foreground/30 mx-auto mb-4" />
             <p className="text-muted-foreground">
-              {searchQuery ? "لا توجد نتائج" : "لا يوجد أدوية في المخزون"}
+              {searchQuery ? t("noResults") : t("noMedicines")}
             </p>
             {!searchQuery && (
               <Button
@@ -218,8 +223,8 @@ export default function Inventory() {
                 className="mt-4"
                 onClick={() => setShowAddDialog(true)}
               >
-                <Plus className="h-4 w-4 ml-2" />
-                أضف دواء جديد
+                <Plus className="h-4 w-4 ml-2 rtl:ml-2 ltr:mr-2" />
+                {t("addNewMedicine")}
               </Button>
             )}
           </div>

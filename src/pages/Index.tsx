@@ -6,13 +6,15 @@ import { AnalysisResults } from "@/components/AnalysisResults";
 import { analyzeImage } from "@/lib/gemini";
 import { AnalysisResult } from "@/types/analysis";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowLeft, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const { toast } = useToast();
+  const { t, language, dir } = useLanguage();
 
   const handleImageSelect = async (base64: string) => {
     setIsLoading(true);
@@ -22,18 +24,22 @@ const Index = () => {
       const analysisResult = await analyzeImage(base64);
       setResult(analysisResult);
       toast({
-        title: "تم التحليل بنجاح",
-        description: "تم تحليل صورة الدواء واستخراج المعلومات",
+        title: t("analysisSuccess"),
+        description: t("analysisSuccessDesc"),
       });
     } catch (error) {
       console.error("Analysis error:", error);
       toast({
         variant: "destructive",
-        title: "خطأ في التحليل",
+        title: t("analysisError"),
         description:
           error instanceof Error
             ? error.message
-            : "حدث خطأ أثناء تحليل الصورة. يرجى المحاولة مرة أخرى.",
+            : language === "ar" 
+              ? "حدث خطأ أثناء تحليل الصورة. يرجى المحاولة مرة أخرى."
+              : language === "fr"
+              ? "Une erreur s'est produite lors de l'analyse. Veuillez réessayer."
+              : "An error occurred during analysis. Please try again.",
       });
     } finally {
       setIsLoading(false);
@@ -44,8 +50,10 @@ const Index = () => {
     setResult(null);
   };
 
+  const ArrowIcon = dir === "rtl" ? ArrowRight : ArrowLeft;
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" dir={dir}>
       <Header />
 
       <main className="container pb-20 pt-6">
@@ -65,9 +73,9 @@ const Index = () => {
                   <Sparkles className="h-8 w-8 text-primary pulse-ring" />
                 </div>
                 <div className="text-center">
-                  <p className="font-semibold text-foreground">جاري تحليل الصورة...</p>
+                  <p className="font-semibold text-foreground">{t("analyzingImage")}</p>
                   <p className="text-sm text-muted-foreground">
-                    يتم استخراج المكونات وتحليلها بالذكاء الاصطناعي
+                    {t("extractingIngredients")}
                   </p>
                 </div>
               </div>
@@ -76,10 +84,10 @@ const Index = () => {
         ) : (
           <>
             <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-foreground">نتائج التحليل</h2>
+              <h2 className="text-2xl font-bold text-foreground">{t("analysisResults")}</h2>
               <Button variant="outline" size="sm" onClick={handleNewAnalysis}>
-                <ArrowRight className="h-4 w-4" />
-                تحليل جديد
+                <ArrowIcon className="h-4 w-4" />
+                {t("newAnalysis")}
               </Button>
             </div>
             <AnalysisResults result={result} />
@@ -91,10 +99,10 @@ const Index = () => {
       <footer className="border-t border-border bg-card/50 py-6">
         <div className="container text-center">
           <p className="text-sm text-muted-foreground">
-            صيدلي البيت © {new Date().getFullYear()} - جميع الحقوق محفوظة
+            {t("copyright", { year: new Date().getFullYear() })}
           </p>
           <p className="mt-1 text-xs text-muted-foreground/70">
-            هذا التطبيق للأغراض المعلوماتية فقط ولا يغني عن استشارة الطبيب
+            {t("disclaimer")}
           </p>
         </div>
       </footer>

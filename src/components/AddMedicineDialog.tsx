@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface AddMedicineDialogProps {
   open: boolean;
@@ -30,6 +31,7 @@ export function AddMedicineDialog({ open, onOpenChange, onSuccess }: AddMedicine
     notes: "",
   });
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +39,7 @@ export function AddMedicineDialog({ open, onOpenChange, onSuccess }: AddMedicine
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("يجب تسجيل الدخول أولاً");
+      if (!user) throw new Error(t("loginRequired"));
 
       const { error } = await supabase.from("medicine_inventory").insert({
         ...formData,
@@ -48,8 +50,8 @@ export function AddMedicineDialog({ open, onOpenChange, onSuccess }: AddMedicine
       if (error) throw error;
 
       toast({
-        title: "تمت الإضافة",
-        description: "تم إضافة الدواء إلى المخزون بنجاح",
+        title: t("added"),
+        description: t("addedDesc"),
       });
 
       setFormData({
@@ -66,8 +68,8 @@ export function AddMedicineDialog({ open, onOpenChange, onSuccess }: AddMedicine
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "خطأ",
-        description: error.message || "فشل في إضافة الدواء",
+        title: t("error"),
+        description: error.message || t("addError"),
       });
     } finally {
       setLoading(false);
@@ -78,12 +80,12 @@ export function AddMedicineDialog({ open, onOpenChange, onSuccess }: AddMedicine
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>إضافة دواء جديد</DialogTitle>
+          <DialogTitle>{t("addNewMedicine")}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name_ar">اسم الدواء *</Label>
+            <Label htmlFor="name_ar">{t("medicineName")} *</Label>
             <Input
               id="name_ar"
               value={formData.name_ar}
@@ -93,7 +95,7 @@ export function AddMedicineDialog({ open, onOpenChange, onSuccess }: AddMedicine
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="scientific_name">الاسم العلمي</Label>
+            <Label htmlFor="scientific_name">{t("scientificName")}</Label>
             <Input
               id="scientific_name"
               value={formData.scientific_name}
@@ -104,7 +106,7 @@ export function AddMedicineDialog({ open, onOpenChange, onSuccess }: AddMedicine
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label htmlFor="quantity">الكمية</Label>
+              <Label htmlFor="quantity">{t("quantity")}</Label>
               <Input
                 id="quantity"
                 type="number"
@@ -115,7 +117,7 @@ export function AddMedicineDialog({ open, onOpenChange, onSuccess }: AddMedicine
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="expiry_date">تاريخ الانتهاء</Label>
+              <Label htmlFor="expiry_date">{t("expiryDate")}</Label>
               <Input
                 id="expiry_date"
                 type="date"
@@ -127,7 +129,7 @@ export function AddMedicineDialog({ open, onOpenChange, onSuccess }: AddMedicine
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="manufacturer">الشركة المصنعة</Label>
+            <Label htmlFor="manufacturer">{t("manufacturer")}</Label>
             <Input
               id="manufacturer"
               value={formData.manufacturer}
@@ -136,7 +138,7 @@ export function AddMedicineDialog({ open, onOpenChange, onSuccess }: AddMedicine
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="primary_use">الاستخدام الأساسي</Label>
+            <Label htmlFor="primary_use">{t("primaryUse")}</Label>
             <Input
               id="primary_use"
               value={formData.primary_use}
@@ -145,7 +147,7 @@ export function AddMedicineDialog({ open, onOpenChange, onSuccess }: AddMedicine
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes">ملاحظات</Label>
+            <Label htmlFor="notes">{t("notes")}</Label>
             <Textarea
               id="notes"
               value={formData.notes}
@@ -156,14 +158,14 @@ export function AddMedicineDialog({ open, onOpenChange, onSuccess }: AddMedicine
 
           <div className="flex gap-3 pt-2">
             <Button type="submit" className="flex-1" disabled={loading}>
-              {loading ? "جاري الإضافة..." : "إضافة"}
+              {loading ? t("adding") : t("add")}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
             >
-              إلغاء
+              {t("cancel")}
             </Button>
           </div>
         </form>

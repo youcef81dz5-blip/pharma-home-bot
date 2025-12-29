@@ -1,6 +1,16 @@
 import { Shield, Scan, FileCheck } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+
+const features = {
+  ar: ["تحليل فوري", "كشف المخاطر", "تقرير مفصل"],
+  en: ["Instant Analysis", "Risk Detection", "Detailed Report"],
+  fr: ["Analyse Instantanée", "Détection des Risques", "Rapport Détaillé"],
+};
 
 export function HeroSection() {
+  const { t, language } = useLanguage();
+  const featureLabels = features[language];
+
   return (
     <section className="relative overflow-hidden py-8">
       {/* Background decoration */}
@@ -11,29 +21,27 @@ export function HeroSection() {
 
       <div className="text-center space-y-4">
         <h1 className="text-3xl font-bold text-foreground sm:text-4xl text-balance">
-          حلل دواءك بـ
-          <span className="gradient-text"> ذكاء اصطناعي</span>
+          {t("heroTitle")}
         </h1>
         <p className="mx-auto max-w-md text-muted-foreground">
-          صوّر علبة الدواء أو المكمل الغذائي واحصل على تحليل شامل للمكونات
-          والتحذيرات الطبية
+          {t("heroDescription")}
         </p>
       </div>
 
       <div className="mt-8 grid grid-cols-3 gap-4">
         <FeatureCard
           icon={<Scan className="h-6 w-6" />}
-          title="تحليل فوري"
+          title={featureLabels[0]}
           delay={0}
         />
         <FeatureCard
           icon={<Shield className="h-6 w-6" />}
-          title="كشف المخاطر"
+          title={featureLabels[1]}
           delay={0.1}
         />
         <FeatureCard
           icon={<FileCheck className="h-6 w-6" />}
-          title="تقرير مفصل"
+          title={featureLabels[2]}
           delay={0.2}
         />
       </div>
