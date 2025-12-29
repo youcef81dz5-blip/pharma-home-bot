@@ -13,12 +13,14 @@ import { useLanguage } from "@/contexts/LanguageContext";
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [currentImageBase64, setCurrentImageBase64] = useState<string | null>(null);
   const { toast } = useToast();
   const { t, language, dir } = useLanguage();
 
   const handleImageSelect = async (base64: string) => {
     setIsLoading(true);
     setResult(null);
+    setCurrentImageBase64(base64);
 
     try {
       const analysisResult = await analyzeImage(base64);
@@ -48,6 +50,7 @@ const Index = () => {
 
   const handleNewAnalysis = () => {
     setResult(null);
+    setCurrentImageBase64(null);
   };
 
   const ArrowIcon = dir === "rtl" ? ArrowRight : ArrowLeft;
@@ -90,7 +93,7 @@ const Index = () => {
                 {t("newAnalysis")}
               </Button>
             </div>
-            <AnalysisResults result={result} />
+            <AnalysisResults result={result} imageBase64={currentImageBase64 || undefined} />
           </>
         )}
       </main>
