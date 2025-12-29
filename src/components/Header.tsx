@@ -1,4 +1,6 @@
-import { Pill } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Pill, Package } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function Header() {
   return (
@@ -13,6 +15,12 @@ export function Header() {
             <span className="text-xs text-muted-foreground">PHARMA HOME</span>
           </div>
         </div>
+        <Link to="/inventory">
+          <Button variant="outline" size="sm" className="gap-2">
+            <Package className="h-4 w-4" />
+            المخزون
+          </Button>
+        </Link>
       </div>
     </header>
   );
