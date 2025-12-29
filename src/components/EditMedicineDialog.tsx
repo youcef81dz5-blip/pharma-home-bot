@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Medicine {
   id: string;
@@ -42,6 +43,7 @@ export function EditMedicineDialog({ open, onOpenChange, medicine, onSuccess }: 
     notes: "",
   });
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (medicine) {
@@ -73,8 +75,8 @@ export function EditMedicineDialog({ open, onOpenChange, medicine, onSuccess }: 
       if (error) throw error;
 
       toast({
-        title: "تم التحديث",
-        description: "تم تحديث بيانات الدواء بنجاح",
+        title: t("updated"),
+        description: t("updatedDesc"),
       });
 
       onSuccess();
@@ -82,8 +84,8 @@ export function EditMedicineDialog({ open, onOpenChange, medicine, onSuccess }: 
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "خطأ",
-        description: error.message || "فشل في تحديث الدواء",
+        title: t("error"),
+        description: error.message || t("updateError"),
       });
     } finally {
       setLoading(false);
@@ -94,12 +96,12 @@ export function EditMedicineDialog({ open, onOpenChange, medicine, onSuccess }: 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>تعديل الدواء</DialogTitle>
+          <DialogTitle>{t("editMedicine")}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="edit_name_ar">اسم الدواء *</Label>
+            <Label htmlFor="edit_name_ar">{t("medicineName")} *</Label>
             <Input
               id="edit_name_ar"
               value={formData.name_ar}
@@ -109,7 +111,7 @@ export function EditMedicineDialog({ open, onOpenChange, medicine, onSuccess }: 
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit_scientific_name">الاسم العلمي</Label>
+            <Label htmlFor="edit_scientific_name">{t("scientificName")}</Label>
             <Input
               id="edit_scientific_name"
               value={formData.scientific_name}
@@ -120,7 +122,7 @@ export function EditMedicineDialog({ open, onOpenChange, medicine, onSuccess }: 
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label htmlFor="edit_quantity">الكمية</Label>
+              <Label htmlFor="edit_quantity">{t("quantity")}</Label>
               <Input
                 id="edit_quantity"
                 type="number"
@@ -131,7 +133,7 @@ export function EditMedicineDialog({ open, onOpenChange, medicine, onSuccess }: 
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="edit_expiry_date">تاريخ الانتهاء</Label>
+              <Label htmlFor="edit_expiry_date">{t("expiryDate")}</Label>
               <Input
                 id="edit_expiry_date"
                 type="date"
@@ -143,7 +145,7 @@ export function EditMedicineDialog({ open, onOpenChange, medicine, onSuccess }: 
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit_manufacturer">الشركة المصنعة</Label>
+            <Label htmlFor="edit_manufacturer">{t("manufacturer")}</Label>
             <Input
               id="edit_manufacturer"
               value={formData.manufacturer}
@@ -152,7 +154,7 @@ export function EditMedicineDialog({ open, onOpenChange, medicine, onSuccess }: 
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit_primary_use">الاستخدام الأساسي</Label>
+            <Label htmlFor="edit_primary_use">{t("primaryUse")}</Label>
             <Input
               id="edit_primary_use"
               value={formData.primary_use}
@@ -161,7 +163,7 @@ export function EditMedicineDialog({ open, onOpenChange, medicine, onSuccess }: 
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit_notes">ملاحظات</Label>
+            <Label htmlFor="edit_notes">{t("notes")}</Label>
             <Textarea
               id="edit_notes"
               value={formData.notes}
@@ -172,14 +174,14 @@ export function EditMedicineDialog({ open, onOpenChange, medicine, onSuccess }: 
 
           <div className="flex gap-3 pt-2">
             <Button type="submit" className="flex-1" disabled={loading}>
-              {loading ? "جاري التحديث..." : "حفظ التعديلات"}
+              {loading ? t("updating") : t("saveChanges")}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
             >
-              إلغاء
+              {t("cancel")}
             </Button>
           </div>
         </form>

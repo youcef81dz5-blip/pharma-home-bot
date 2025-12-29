@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Pill, Mail, Lock, User } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { ThemeLanguageToggle } from "@/components/ThemeLanguageToggle";
+import { Pill, Mail, Lock } from "lucide-react";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -14,6 +16,7 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t, dir } = useLanguage();
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,8 +30,8 @@ export default function Auth() {
         });
         if (error) throw error;
         toast({
-          title: "تم تسجيل الدخول بنجاح",
-          description: "مرحباً بك في صيدلي البيت",
+          title: t("loginSuccess"),
+          description: t("welcomeBack"),
         });
         navigate("/inventory");
       } else {
@@ -41,23 +44,23 @@ export default function Auth() {
         });
         if (error) throw error;
         toast({
-          title: "تم إنشاء الحساب بنجاح",
-          description: "مرحباً بك في صيدلي البيت",
+          title: t("accountCreated"),
+          description: t("welcomeBack"),
         });
         navigate("/inventory");
       }
     } catch (error: any) {
-      let message = "حدث خطأ غير متوقع";
+      let message = t("error");
       if (error.message.includes("Invalid login credentials")) {
-        message = "البريد الإلكتروني أو كلمة المرور غير صحيحة";
+        message = t("error");
       } else if (error.message.includes("User already registered")) {
-        message = "هذا البريد الإلكتروني مسجل بالفعل";
+        message = t("error");
       } else if (error.message.includes("Password should be at least")) {
-        message = "كلمة المرور يجب أن تكون 6 أحرف على الأقل";
+        message = t("error");
       }
       toast({
         variant: "destructive",
-        title: "خطأ",
+        title: t("error"),
         description: message,
       });
     } finally {
@@ -66,31 +69,35 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4" dir={dir}>
+      <div className="absolute top-4 right-4">
+        <ThemeLanguageToggle />
+      </div>
+      
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary shadow-soft mx-auto mb-4">
             <Pill className="h-8 w-8 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">صيدلي البيت</h1>
+          <h1 className="text-2xl font-bold text-foreground">{t("appName")}</h1>
           <p className="text-muted-foreground mt-2">
-            {isLogin ? "تسجيل الدخول للوصول لمخزون أدويتك" : "إنشاء حساب جديد"}
+            {isLogin ? t("loginToAccess") : t("createAccount")}
           </p>
         </div>
 
         <div className="glass-card rounded-2xl p-6 border border-border/50">
           <form onSubmit={handleAuth} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">البريد الإلكتروني</Label>
+              <Label htmlFor="email">{t("email")}</Label>
               <div className="relative">
-                <Mail className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Mail className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground rtl:right-3 ltr:left-3" />
                 <Input
                   id="email"
                   type="email"
                   placeholder="example@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pr-10"
+                  className="px-10"
                   required
                   dir="ltr"
                 />
@@ -98,16 +105,16 @@ export default function Auth() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">كلمة المرور</Label>
+              <Label htmlFor="password">{t("password")}</Label>
               <div className="relative">
-                <Lock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Lock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground rtl:right-3 ltr:left-3" />
                 <Input
                   id="password"
                   type="password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pr-10"
+                  className="px-10"
                   required
                   minLength={6}
                   dir="ltr"
@@ -119,9 +126,9 @@ export default function Auth() {
               {loading ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
               ) : isLogin ? (
-                "تسجيل الدخول"
+                t("login")
               ) : (
-                "إنشاء حساب"
+                t("signup")
               )}
             </Button>
           </form>
@@ -132,7 +139,7 @@ export default function Auth() {
               onClick={() => setIsLogin(!isLogin)}
               className="text-sm text-primary hover:underline"
             >
-              {isLogin ? "ليس لديك حساب؟ أنشئ حساباً جديداً" : "لديك حساب؟ سجل الدخول"}
+              {isLogin ? t("noAccount") : t("hasAccount")}
             </button>
           </div>
         </div>

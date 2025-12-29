@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Trash2, Calendar, Package, ChevronDown, ChevronUp, Edit2 } from "lucide-react";
 import { EditMedicineDialog } from "./EditMedicineDialog";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Medicine {
   id: string;
@@ -23,22 +24,23 @@ interface MedicineCardProps {
 export function MedicineCard({ medicine, onDelete, onRefresh }: MedicineCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const { t } = useLanguage();
 
   const getExpiryStatus = () => {
-    if (!medicine.expiry_date) return { status: "unknown", label: "غير محدد", color: "text-muted-foreground" };
+    if (!medicine.expiry_date) return { status: "unknown", label: t("unknown"), color: "text-muted-foreground" };
     
     const daysRemaining = Math.ceil(
       (new Date(medicine.expiry_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
     );
 
     if (daysRemaining < 0) {
-      return { status: "expired", label: "منتهي الصلاحية", color: "text-destructive", days: Math.abs(daysRemaining) };
+      return { status: "expired", label: t("expired"), color: "text-destructive", days: Math.abs(daysRemaining) };
     } else if (daysRemaining <= 30) {
-      return { status: "critical", label: `${daysRemaining} يوم متبقي`, color: "text-destructive" };
+      return { status: "critical", label: t("daysRemaining", { days: daysRemaining }), color: "text-destructive" };
     } else if (daysRemaining <= 90) {
-      return { status: "warning", label: `${daysRemaining} يوم متبقي`, color: "text-warning" };
+      return { status: "warning", label: t("daysRemaining", { days: daysRemaining }), color: "text-warning" };
     }
-    return { status: "safe", label: `${daysRemaining} يوم متبقي`, color: "text-success" };
+    return { status: "safe", label: t("daysRemaining", { days: daysRemaining }), color: "text-success" };
   };
 
   const expiryStatus = getExpiryStatus();
@@ -108,12 +110,12 @@ export function MedicineCard({ medicine, onDelete, onRefresh }: MedicineCardProp
               {expanded ? (
                 <>
                   <ChevronUp className="h-4 w-4" />
-                  إخفاء التفاصيل
+                  {t("hideDetails")}
                 </>
               ) : (
                 <>
                   <ChevronDown className="h-4 w-4" />
-                  عرض التفاصيل
+                  {t("showDetails")}
                 </>
               )}
             </button>
@@ -122,19 +124,19 @@ export function MedicineCard({ medicine, onDelete, onRefresh }: MedicineCardProp
               <div className="mt-3 space-y-2 border-t border-border/50 pt-3 text-sm">
                 {medicine.primary_use && (
                   <div>
-                    <span className="text-muted-foreground">الاستخدام: </span>
+                    <span className="text-muted-foreground">{t("use")}: </span>
                     <span className="text-foreground">{medicine.primary_use}</span>
                   </div>
                 )}
                 {medicine.manufacturer && (
                   <div>
-                    <span className="text-muted-foreground">الشركة المصنعة: </span>
+                    <span className="text-muted-foreground">{t("manufacturer")}: </span>
                     <span className="text-foreground">{medicine.manufacturer}</span>
                   </div>
                 )}
                 {medicine.notes && (
                   <div>
-                    <span className="text-muted-foreground">ملاحظات: </span>
+                    <span className="text-muted-foreground">{t("notes")}: </span>
                     <span className="text-foreground">{medicine.notes}</span>
                   </div>
                 )}

@@ -2,17 +2,50 @@ import { useState, useRef, useCallback } from "react";
 import { Camera, Upload, Image as ImageIcon, X, Loader2, Pill } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ImageUploaderProps {
   onImageSelect: (base64: string) => void;
   isLoading: boolean;
 }
 
+const labels = {
+  ar: {
+    uploadTitle: "ارفع صورة الدواء",
+    dragHint: "اسحب الصورة هنا أو اختر من الخيارات أدناه",
+    uploadBtn: "رفع صورة",
+    cameraBtn: "التقاط بالكاميرا",
+    analyzing: "جاري التحليل...",
+    analyze: "تحليل المكونات",
+    imageAlt: "صورة الدواء",
+  },
+  en: {
+    uploadTitle: "Upload Medicine Image",
+    dragHint: "Drag image here or choose from options below",
+    uploadBtn: "Upload Image",
+    cameraBtn: "Take Photo",
+    analyzing: "Analyzing...",
+    analyze: "Analyze Ingredients",
+    imageAlt: "Medicine image",
+  },
+  fr: {
+    uploadTitle: "Télécharger l'Image du Médicament",
+    dragHint: "Glissez l'image ici ou choisissez parmi les options ci-dessous",
+    uploadBtn: "Télécharger",
+    cameraBtn: "Prendre une Photo",
+    analyzing: "Analyse en cours...",
+    analyze: "Analyser les Ingrédients",
+    imageAlt: "Image du médicament",
+  },
+};
+
 export function ImageUploader({ onImageSelect, isLoading }: ImageUploaderProps) {
   const [preview, setPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  const { language } = useLanguage();
+  const l = labels[language];
 
   const handleFile = useCallback((file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -87,10 +120,10 @@ export function ImageUploader({ onImageSelect, isLoading }: ImageUploaderProps) 
             </div>
             <div>
               <h3 className="text-lg font-semibold text-foreground">
-                ارفع صورة الدواء
+                {l.uploadTitle}
               </h3>
               <p className="mt-1 text-sm text-muted-foreground">
-                اسحب الصورة هنا أو اختر من الخيارات أدناه
+                {l.dragHint}
               </p>
             </div>
           </div>
@@ -119,7 +152,7 @@ export function ImageUploader({ onImageSelect, isLoading }: ImageUploaderProps) 
               className="flex-1 sm:flex-none"
             >
               <Upload className="h-5 w-5" />
-              <span>رفع صورة</span>
+              <span>{l.uploadBtn}</span>
             </Button>
 
             <Button
@@ -129,7 +162,7 @@ export function ImageUploader({ onImageSelect, isLoading }: ImageUploaderProps) 
               className="flex-1 sm:flex-none"
             >
               <Camera className="h-5 w-5" />
-              <span>التقاط بالكاميرا</span>
+              <span>{l.cameraBtn}</span>
             </Button>
           </div>
         </div>
@@ -138,7 +171,7 @@ export function ImageUploader({ onImageSelect, isLoading }: ImageUploaderProps) 
           <div className="relative overflow-hidden rounded-2xl shadow-card">
             <img
               src={preview}
-              alt="صورة الدواء"
+              alt={l.imageAlt}
               className="h-64 w-full object-cover sm:h-80"
             />
             <button
@@ -159,12 +192,12 @@ export function ImageUploader({ onImageSelect, isLoading }: ImageUploaderProps) 
             {isLoading ? (
               <>
                 <Loader2 className="h-6 w-6 animate-spin" />
-                <span>جاري التحليل...</span>
+                <span>{l.analyzing}</span>
               </>
             ) : (
               <>
                 <Pill className="h-6 w-6" />
-                <span>تحليل المكونات</span>
+                <span>{l.analyze}</span>
               </>
             )}
           </Button>
