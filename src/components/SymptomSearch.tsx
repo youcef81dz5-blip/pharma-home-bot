@@ -12,6 +12,8 @@ interface Medicine {
   name_ar: string;
   scientific_name: string | null;
   primary_use: string | null;
+  notes: string | null;
+  manufacturer: string | null;
 }
 
 interface SymptomSearchProps {
