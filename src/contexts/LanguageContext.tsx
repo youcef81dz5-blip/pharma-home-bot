@@ -399,6 +399,42 @@ export const translations: Translations = {
     en: "Please login first",
     fr: "Veuillez d'abord vous connecter",
   },
+  // Symptom Search
+  symptomSearch: {
+    ar: "البحث بالأعراض",
+    en: "Search by Symptoms",
+    fr: "Recherche par Symptômes",
+  },
+  symptomPlaceholder: {
+    ar: "اكتب الأعراض التي تشعر بها (مثل: صداع، حرارة، سعال...)",
+    en: "Describe your symptoms (e.g., headache, fever, cough...)",
+    fr: "Décrivez vos symptômes (ex: maux de tête, fièvre, toux...)",
+  },
+  searchBySymptoms: {
+    ar: "ابحث عن دواء مناسب",
+    en: "Find Suitable Medicine",
+    fr: "Trouver un Médicament Adapté",
+  },
+  searching: {
+    ar: "جاري البحث...",
+    en: "Searching...",
+    fr: "Recherche en cours...",
+  },
+  suggestions: {
+    ar: "الاقتراحات",
+    en: "Suggestions",
+    fr: "Suggestions",
+  },
+  medicalDisclaimer: {
+    ar: "⚠️ تنبيه مهم: هذه اقتراحات فقط ولا تغني عن استشارة الطبيب. يُنصح دائماً بمراجعة طبيب مختص قبل استعمال أي دواء.",
+    en: "⚠️ Important: These are suggestions only and do not replace medical consultation. Always consult a doctor before using any medication.",
+    fr: "⚠️ Important: Ce sont des suggestions uniquement et ne remplacent pas une consultation médicale. Consultez toujours un médecin avant d'utiliser un médicament.",
+  },
+  suggestionError: {
+    ar: "حدث خطأ أثناء البحث",
+    en: "Error during search",
+    fr: "Erreur lors de la recherche",
+  },
 };
 
 interface LanguageContextType {
