@@ -25,9 +25,16 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const medicineList = medicines.map((m: any) => 
-      `- ${m.name_ar}${m.scientific_name ? ` (${m.scientific_name})` : ''}: ${m.primary_use || 'غير محدد'}`
-    ).join('\n');
+    const medicineList = medicines.map((m: any) => {
+      const parts = [
+        `- ${m.name_ar}`,
+        m.scientific_name ? `(${m.scientific_name})` : '',
+        m.manufacturer ? `- الشركة: ${m.manufacturer}` : '',
+        m.primary_use ? `- الاستخدام: ${m.primary_use}` : '',
+        m.notes ? `- ملاحظات: ${m.notes}` : ''
+      ].filter(Boolean);
+      return parts.join(' ');
+    }).join('\n');
 
     const systemPrompt = `أنت صيدلي خبير ومساعد طبي. مهمتك هي اقتراح الأدوية المناسبة من قائمة الأدوية المتوفرة بناءً على الأعراض المذكورة.
 
