@@ -101,7 +101,10 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-border bg-card/50 py-6">
         <div className="container text-center">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm font-medium text-foreground">
+            {t("developedBy")}
+          </p>
+          <p className="text-sm text-muted-foreground mt-1">
             {t("copyright", { year: new Date().getFullYear() })}
           </p>
           <p className="mt-1 text-xs text-muted-foreground/70">

@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { MedicineCard } from "@/components/MedicineCard";
 import { AddMedicineDialog } from "@/components/AddMedicineDialog";
+import { AddFromImageDialog } from "@/components/AddFromImageDialog";
 import { ThemeLanguageToggle } from "@/components/ThemeLanguageToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Plus, Search, Package, AlertTriangle, LogOut } from "lucide-react";
+import { Plus, Search, Package, AlertTriangle, LogOut, Camera, Upload } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 
 interface Medicine {
@@ -28,6 +29,7 @@ export default function Inventory() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showImageDialog, setShowImageDialog] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t, dir } = useLanguage();
@@ -195,7 +197,7 @@ export default function Inventory() {
         )}
 
         {/* Search and Add */}
-        <div className="flex gap-3 mb-6">
+        <div className="flex flex-col gap-3 mb-6">
           <div className="relative flex-1">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground rtl:right-3 ltr:left-3" />
             <Input
@@ -205,9 +207,28 @@ export default function Inventory() {
               className="px-10"
             />
           </div>
-          <Button onClick={() => setShowAddDialog(true)}>
-            <Plus className="h-4 w-4" />
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              className="flex-1"
+              onClick={() => setShowImageDialog(true)}
+            >
+              <Camera className="h-4 w-4" />
+              <span className="hidden sm:inline">{t("captureImage")}</span>
+            </Button>
+            <Button 
+              variant="outline" 
+              className="flex-1"
+              onClick={() => setShowImageDialog(true)}
+            >
+              <Upload className="h-4 w-4" />
+              <span className="hidden sm:inline">{t("uploadImageBtn")}</span>
+            </Button>
+            <Button onClick={() => setShowAddDialog(true)}>
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">{t("addNewMedicine")}</span>
+            </Button>
+          </div>
         </div>
 
         {/* Medicine List */}
@@ -245,6 +266,12 @@ export default function Inventory() {
       <AddMedicineDialog
         open={showAddDialog}
         onOpenChange={setShowAddDialog}
+        onSuccess={fetchMedicines}
+      />
+
+      <AddFromImageDialog
+        open={showImageDialog}
+        onOpenChange={setShowImageDialog}
         onSuccess={fetchMedicines}
       />
     </div>
