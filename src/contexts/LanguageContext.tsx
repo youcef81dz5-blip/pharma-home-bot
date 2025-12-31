@@ -102,6 +102,31 @@ export const translations: Translations = {
     en: "PHARMA HOME © {year} - All rights reserved",
     fr: "PHARMA MAISON © {year} - Tous droits réservés",
   },
+  developedBy: {
+    ar: "تطوير: بن علي يوسف",
+    en: "Developed by: Ben Ali Youssef",
+    fr: "Développé par: Ben Ali Youssef",
+  },
+  addFromImage: {
+    ar: "إضافة من صورة",
+    en: "Add from Image",
+    fr: "Ajouter depuis une Image",
+  },
+  captureImage: {
+    ar: "التقاط صورة",
+    en: "Capture Image",
+    fr: "Capturer une Image",
+  },
+  uploadImageBtn: {
+    ar: "رفع صورة",
+    en: "Upload Image",
+    fr: "Télécharger une Image",
+  },
+  analyzingAndAdding: {
+    ar: "جاري التحليل والإضافة...",
+    en: "Analyzing and adding...",
+    fr: "Analyse et ajout en cours...",
+  },
   disclaimer: {
     ar: "هذا التطبيق للأغراض المعلوماتية فقط ولا يغني عن استشارة الطبيب",
     en: "This app is for informational purposes only and does not replace medical consultation",
