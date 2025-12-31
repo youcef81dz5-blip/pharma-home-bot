@@ -1,1 +1,4 @@
 project_id = "swtwpydqvnnixothehiw"
+
+[functions.suggest-medicine]
+verify_jwt = false
