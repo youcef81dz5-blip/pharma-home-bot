@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { MedicineCard } from "@/components/MedicineCard";
 import { AddMedicineDialog } from "@/components/AddMedicineDialog";
 import { AddFromImageDialog } from "@/components/AddFromImageDialog";
+import { SymptomSearch } from "@/components/SymptomSearch";
 import { ThemeLanguageToggle } from "@/components/ThemeLanguageToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Plus, Search, Package, AlertTriangle, LogOut, Camera, Upload } from "lucide-react";
@@ -194,6 +195,11 @@ export default function Inventory() {
               </div>
             )}
           </div>
+        )}
+
+        {/* Symptom Search */}
+        {medicines.length > 0 && (
+          <SymptomSearch medicines={medicines} />
         )}
 
         {/* Search and Add */}
