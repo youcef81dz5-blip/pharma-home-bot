@@ -435,6 +435,162 @@ export const translations: Translations = {
     en: "Error during search",
     fr: "Erreur lors de la recherche",
   },
+  // About Page
+  aboutApp: {
+    ar: "تعرف على التطبيق",
+    en: "About the App",
+    fr: "À propos de l'App",
+  },
+  backToHome: {
+    ar: "العودة للرئيسية",
+    en: "Back to Home",
+    fr: "Retour à l'Accueil",
+  },
+  aboutTitle: {
+    ar: "صيدلي البيت - صيدليتك الذكية في جيبك",
+    en: "PHARMA HOME - Your Smart Pharmacy in Your Pocket",
+    fr: "PHARMA MAISON - Votre Pharmacie Intelligente dans Votre Poche",
+  },
+  aboutDescription: {
+    ar: "تطبيق ذكي يساعدك في إدارة أدوية منزلك وتحليل مكوناتها باستخدام الذكاء الاصطناعي",
+    en: "A smart app that helps you manage your home medicines and analyze their ingredients using AI",
+    fr: "Une application intelligente qui vous aide à gérer vos médicaments à domicile et à analyser leurs ingrédients avec l'IA",
+  },
+  whatIsApp: {
+    ar: "ما هو صيدلي البيت؟",
+    en: "What is PHARMA HOME?",
+    fr: "Qu'est-ce que PHARMA MAISON?",
+  },
+  whatIsAppDesc: {
+    ar: "صيدلي البيت هو تطبيق ثوري يحوّل هاتفك إلى صيدلي شخصي ذكي. يمكنك من خلاله تصوير أي دواء للحصول على تحليل شامل لمكوناته، إدارة مخزون أدوية منزلك، ومعرفة الدواء المناسب لأعراضك من الأدوية المتوفرة لديك. كل هذا مع تذكيرات بتواريخ انتهاء الصلاحية!",
+    en: "PHARMA HOME is a revolutionary app that transforms your phone into a smart personal pharmacist. You can photograph any medicine to get a comprehensive analysis of its ingredients, manage your home medicine inventory, and find the right medicine for your symptoms from what you already have. All with expiry date reminders!",
+    fr: "PHARMA MAISON est une application révolutionnaire qui transforme votre téléphone en pharmacien personnel intelligent. Vous pouvez photographier n'importe quel médicament pour obtenir une analyse complète de ses ingrédients, gérer votre inventaire de médicaments à domicile et trouver le bon médicament pour vos symptômes. Tout cela avec des rappels de dates d'expiration!",
+  },
+  appFeatures: {
+    ar: "مميزات التطبيق",
+    en: "App Features",
+    fr: "Fonctionnalités de l'App",
+  },
+  featureAnalysis: {
+    ar: "تحليل الأدوية بالصور",
+    en: "Medicine Analysis by Photo",
+    fr: "Analyse des Médicaments par Photo",
+  },
+  featureAnalysisDesc: {
+    ar: "التقط صورة لأي دواء واحصل على تحليل شامل لمكوناته وتحذيراته وطريقة استخدامه",
+    en: "Take a photo of any medicine and get a comprehensive analysis of its ingredients, warnings, and usage",
+    fr: "Prenez une photo de n'importe quel médicament et obtenez une analyse complète de ses ingrédients, avertissements et utilisation",
+  },
+  featureAI: {
+    ar: "ذكاء اصطناعي متقدم",
+    en: "Advanced AI Technology",
+    fr: "Intelligence Artificielle Avancée",
+  },
+  featureAIDesc: {
+    ar: "نستخدم أحدث تقنيات الذكاء الاصطناعي من Google Gemini لتحليل دقيق وموثوق",
+    en: "We use the latest Google Gemini AI technology for accurate and reliable analysis",
+    fr: "Nous utilisons la dernière technologie d'IA Google Gemini pour une analyse précise et fiable",
+  },
+  featureInventory: {
+    ar: "إدارة مخزون الأدوية",
+    en: "Medicine Inventory Management",
+    fr: "Gestion de l'Inventaire des Médicaments",
+  },
+  featureInventoryDesc: {
+    ar: "تتبع جميع أدوية منزلك في مكان واحد مع معلومات مفصلة عن كل دواء",
+    en: "Track all your home medicines in one place with detailed information about each",
+    fr: "Suivez tous vos médicaments à domicile en un seul endroit avec des informations détaillées",
+  },
+  featureSymptom: {
+    ar: "البحث بالأعراض",
+    en: "Symptom-Based Search",
+    fr: "Recherche par Symptômes",
+  },
+  featureSymptomDesc: {
+    ar: "أدخل أعراضك والتطبيق يقترح الدواء المناسب من مخزونك مع نصيحة باستشارة الطبيب",
+    en: "Enter your symptoms and the app suggests suitable medicine from your inventory with advice to consult a doctor",
+    fr: "Entrez vos symptômes et l'app suggère un médicament approprié de votre inventaire avec conseil de consulter un médecin",
+  },
+  featureExpiry: {
+    ar: "تنبيهات انتهاء الصلاحية",
+    en: "Expiry Alerts",
+    fr: "Alertes d'Expiration",
+  },
+  featureExpiryDesc: {
+    ar: "تنبيهات تلقائية للأدوية التي اقتربت صلاحيتها أو انتهت لحمايتك وعائلتك",
+    en: "Automatic alerts for medicines approaching or past expiry to protect you and your family",
+    fr: "Alertes automatiques pour les médicaments proches ou dépassés pour vous protéger",
+  },
+  featureSecurity: {
+    ar: "أمان وخصوصية",
+    en: "Security & Privacy",
+    fr: "Sécurité et Confidentialité",
+  },
+  featureSecurityDesc: {
+    ar: "بياناتك محمية ومشفرة، ولا يمكن لأحد الوصول إليها سواك",
+    en: "Your data is protected and encrypted, only you can access it",
+    fr: "Vos données sont protégées et chiffrées, vous seul pouvez y accéder",
+  },
+  howItWorks: {
+    ar: "كيف يعمل التطبيق؟",
+    en: "How Does It Work?",
+    fr: "Comment Ça Marche?",
+  },
+  step1: {
+    ar: "التقط صورة للدواء أو أضفه يدوياً إلى مخزونك",
+    en: "Take a photo of the medicine or add it manually to your inventory",
+    fr: "Prenez une photo du médicament ou ajoutez-le manuellement à votre inventaire",
+  },
+  step2: {
+    ar: "الذكاء الاصطناعي يحلل الصورة ويستخرج المعلومات",
+    en: "AI analyzes the image and extracts information",
+    fr: "L'IA analyse l'image et extrait les informations",
+  },
+  step3: {
+    ar: "احصل على تفاصيل شاملة عن المكونات والتحذيرات",
+    en: "Get comprehensive details about ingredients and warnings",
+    fr: "Obtenez des détails complets sur les ingrédients et avertissements",
+  },
+  step4: {
+    ar: "ابحث بأعراضك للعثور على الدواء المناسب من مخزونك",
+    en: "Search by symptoms to find suitable medicine from your inventory",
+    fr: "Recherchez par symptômes pour trouver le médicament approprié",
+  },
+  whyChooseUs: {
+    ar: "لماذا تختار صيدلي البيت؟",
+    en: "Why Choose PHARMA HOME?",
+    fr: "Pourquoi Choisir PHARMA MAISON?",
+  },
+  advantage1: {
+    ar: "مجاني بالكامل وسهل الاستخدام",
+    en: "Completely free and easy to use",
+    fr: "Entièrement gratuit et facile à utiliser",
+  },
+  advantage2: {
+    ar: "يدعم اللغة العربية والإنجليزية والفرنسية",
+    en: "Supports Arabic, English, and French",
+    fr: "Supporte l'arabe, l'anglais et le français",
+  },
+  advantage3: {
+    ar: "يعمل بدون إنترنت للوظائف الأساسية",
+    en: "Works offline for basic functions",
+    fr: "Fonctionne hors ligne pour les fonctions de base",
+  },
+  advantage4: {
+    ar: "تحديثات مستمرة وميزات جديدة",
+    en: "Continuous updates and new features",
+    fr: "Mises à jour continues et nouvelles fonctionnalités",
+  },
+  advantage5: {
+    ar: "دعم فني سريع ومتجاوب",
+    en: "Fast and responsive technical support",
+    fr: "Support technique rapide et réactif",
+  },
+  startNow: {
+    ar: "ابدأ الآن",
+    en: "Start Now",
+    fr: "Commencer Maintenant",
+  },
 };
 
 interface LanguageContextType {

@@ -6,17 +6,17 @@ import { AnalysisResults } from "@/components/AnalysisResults";
 import { analyzeImage } from "@/lib/gemini";
 import { AnalysisResult } from "@/types/analysis";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowRight, ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowLeft, Sparkles, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
-
+import { useNavigate } from "react-router-dom";
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [currentImageBase64, setCurrentImageBase64] = useState<string | null>(null);
   const { toast } = useToast();
   const { t, language, dir } = useLanguage();
-
+  const navigate = useNavigate();
   const handleImageSelect = async (base64: string) => {
     setIsLoading(true);
     setResult(null);
@@ -62,6 +62,18 @@ const Index = () => {
       <main className="container pb-20 pt-6">
         {!result ? (
           <>
+            {/* About App Button */}
+            <div className="flex justify-center mb-4">
+              <Button 
+                variant="outline" 
+                onClick={() => navigate("/about")}
+                className="gap-2"
+              >
+                <Info className="h-4 w-4" />
+                {t("aboutApp")}
+              </Button>
+            </div>
+
             <HeroSection />
             <div className="mt-8">
               <ImageUploader onImageSelect={handleImageSelect} isLoading={isLoading} />
