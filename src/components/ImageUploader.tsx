@@ -19,8 +19,8 @@ const labels = {
     analyzing: "جاري التحليل...",
     analyze: "تحليل المكونات",
     imageAlt: "صورة الدواء",
-    photoTip: "نصيحة للتصوير الأمثل",
-    photoTipText: "تأكد من إضاءة جيدة وتجنب الظلال. صوّر المكونات بشكل واضح مع تجنب تأثير Vignette (الحواف الداكنة). ضع الدواء على خلفية فاتحة وموحدة للحصول على أفضل نتائج التحليل.",
+    photoTip: "⚠️ نصيحة مهمة للتصوير",
+    photoTipText: "لقراءة دقيقة خاصة لتاريخ الصلاحية: أوقف تأثير Vignette (الحواف الداكنة) من إعدادات الكاميرا. استخدم إضاءة جيدة ومتساوية، وضع الدواء على خلفية فاتحة وبيضاء. تأكد أن تاريخ الصلاحية والمكونات واضحة ومقروءة في الصورة.",
   },
   en: {
     uploadTitle: "Upload Medicine Image",
@@ -30,8 +30,8 @@ const labels = {
     analyzing: "Analyzing...",
     analyze: "Analyze Ingredients",
     imageAlt: "Medicine image",
-    photoTip: "Photo Tips",
-    photoTipText: "Ensure good lighting and avoid shadows. Capture ingredients clearly without vignette effect (dark edges). Place medicine on a light, uniform background for best analysis results.",
+    photoTip: "⚠️ Important Photo Tips",
+    photoTipText: "For accurate reading, especially expiry dates: Disable Vignette effect (dark edges) in camera settings. Use good, even lighting and place medicine on a light/white background. Ensure expiry date and ingredients are clear and readable in the photo.",
   },
   fr: {
     uploadTitle: "Télécharger l'Image du Médicament",
@@ -41,8 +41,8 @@ const labels = {
     analyzing: "Analyse en cours...",
     analyze: "Analyser les Ingrédients",
     imageAlt: "Image du médicament",
-    photoTip: "Conseils Photo",
-    photoTipText: "Assurez un bon éclairage et évitez les ombres. Capturez les ingrédients clairement sans effet vignette (bords sombres). Placez le médicament sur un fond clair et uniforme pour de meilleurs résultats.",
+    photoTip: "⚠️ Conseils Photo Importants",
+    photoTipText: "Pour une lecture précise, surtout des dates de péremption: Désactivez l'effet Vignette (bords sombres) dans les paramètres de l'appareil photo. Utilisez un bon éclairage uniforme et placez le médicament sur un fond clair/blanc. Assurez-vous que la date de péremption et les ingrédients sont clairs et lisibles.",
   },
 };
 
