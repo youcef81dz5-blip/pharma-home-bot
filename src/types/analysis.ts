@@ -40,11 +40,29 @@ export interface MarketingAudit {
   scientific_fact_check: string;
 }
 
+export interface DosageInfo {
+  adult_dose: string;
+  child_dose: string;
+  max_daily_dose: string;
+  frequency: string;
+  duration: string;
+}
+
+export interface UsageInstructions {
+  administration_method: string;
+  best_time_to_take: string;
+  with_food: string;
+  special_instructions: string[];
+  warnings: string[];
+}
+
 export interface DetailedMedicalReport {
   indications: string[];
   contraindications: string[];
   common_side_effects: string[];
   rare_serious_risks: string[];
+  dosage_info: DosageInfo;
+  usage_instructions: UsageInstructions;
 }
 
 export interface AnalysisResult {
