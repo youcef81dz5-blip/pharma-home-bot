@@ -12,6 +12,9 @@ import {
   Info,
   PackagePlus,
   Loader2,
+  Syringe,
+  Timer,
+  BookOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -325,6 +328,76 @@ export function AnalysisResults({ result, imageBase64 }: AnalysisResultsProps) {
             <p className="text-sm text-muted-foreground">
               {result.marketing_audit.scientific_fact_check}
             </p>
+          )}
+        </section>
+      )}
+
+      {/* Dosage Information */}
+      {result.detailed_medical_report.dosage_info && (
+        <section className="glass-card rounded-2xl p-5 border-2 border-primary/20">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+              <Syringe className="h-5 w-5 text-primary" />
+            </div>
+            <h2 className="text-xl font-bold text-foreground">💊 الجرعات الموصى بها</h2>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <InfoRow label="جرعة البالغين" value={result.detailed_medical_report.dosage_info.adult_dose} />
+            <InfoRow label="جرعة الأطفال" value={result.detailed_medical_report.dosage_info.child_dose} />
+            <InfoRow label="الحد الأقصى اليومي" value={result.detailed_medical_report.dosage_info.max_daily_dose} />
+            <InfoRow label="عدد المرات يومياً" value={result.detailed_medical_report.dosage_info.frequency} />
+            <InfoRow label="مدة العلاج" value={result.detailed_medical_report.dosage_info.duration} />
+          </div>
+          <div className="mt-4 p-3 rounded-xl bg-destructive/10 border border-destructive/30">
+            <p className="text-sm text-destructive font-medium flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4" />
+              تحذير: لا تتجاوز الجرعة الموصى بها. استشر الطبيب قبل تغيير الجرعة.
+            </p>
+          </div>
+        </section>
+      )}
+
+      {/* Usage Instructions */}
+      {result.detailed_medical_report.usage_instructions && (
+        <section className="glass-card rounded-2xl p-5 border-2 border-success/20">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-success/10">
+              <BookOpen className="h-5 w-5 text-success" />
+            </div>
+            <h2 className="text-xl font-bold text-foreground">📋 طريقة الاستعمال الآمنة</h2>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 mb-4">
+            <InfoRow label="طريقة التناول" value={result.detailed_medical_report.usage_instructions.administration_method} />
+            <InfoRow label="أفضل وقت" value={result.detailed_medical_report.usage_instructions.best_time_to_take} />
+            <InfoRow label="مع الطعام" value={result.detailed_medical_report.usage_instructions.with_food} />
+          </div>
+          
+          {result.detailed_medical_report.usage_instructions.special_instructions?.length > 0 && (
+            <div className="mb-3">
+              <h4 className="text-sm font-semibold text-primary mb-2 flex items-center gap-2">
+                <Timer className="h-4 w-4" />
+                تعليمات خاصة
+              </h4>
+              <ul className="list-inside list-disc space-y-1">
+                {result.detailed_medical_report.usage_instructions.special_instructions.map((inst, idx) => (
+                  <li key={idx} className="text-sm text-muted-foreground">{inst}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          
+          {result.detailed_medical_report.usage_instructions.warnings?.length > 0 && (
+            <div className="p-3 rounded-xl bg-warning/10 border border-warning/30">
+              <h4 className="text-sm font-semibold text-warning mb-2 flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4" />
+                تحذيرات السلامة
+              </h4>
+              <ul className="list-inside list-disc space-y-1">
+                {result.detailed_medical_report.usage_instructions.warnings.map((warn, idx) => (
+                  <li key={idx} className="text-sm text-warning">{warn}</li>
+                ))}
+              </ul>
+            </div>
           )}
         </section>
       )}
