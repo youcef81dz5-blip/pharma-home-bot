@@ -103,7 +103,7 @@ export function MedicationReminders() {
     }
   }, []);
 
-  // Check reminders every minute
+  // Check reminders every minute and on mount
   useEffect(() => {
     const checkReminders = () => {
       const now = new Date();
@@ -121,17 +121,72 @@ export function MedicationReminders() {
       });
     };
 
+    // Check immediately on mount
+    checkReminders();
+    
     const interval = setInterval(checkReminders, 60000);
     return () => clearInterval(interval);
-  }, [reminders]);
+  }, [reminders, language]);
+
+  const playNotificationSound = () => {
+    try {
+      // Create audio context for notification sound
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      // Pleasant notification tone
+      oscillator.frequency.setValueAtTime(880, audioContext.currentTime); // A5
+      oscillator.type = "sine";
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.5);
+      
+      // Play second beep
+      setTimeout(() => {
+        const osc2 = audioContext.createOscillator();
+        const gain2 = audioContext.createGain();
+        osc2.connect(gain2);
+        gain2.connect(audioContext.destination);
+        osc2.frequency.setValueAtTime(1046.5, audioContext.currentTime); // C6
+        osc2.type = "sine";
+        gain2.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        osc2.start();
+        osc2.stop(audioContext.currentTime + 0.5);
+      }, 200);
+    } catch (error) {
+      console.error("Error playing sound:", error);
+    }
+  };
 
   const showNotification = (reminder: Reminder) => {
+    // Play sound first
+    playNotificationSound();
+    
+    // Show toast notification (always works)
+    toast.info(`💊 ${reminder.medicine_name}`, {
+      description: reminder.dosage || (language === "ar" ? "حان وقت الدواء" : "Time to take your medicine"),
+      duration: 10000,
+    });
+
+    // Also show browser notification if permission granted
     if ("Notification" in window && Notification.permission === "granted") {
-      new Notification(`💊 ${reminder.medicine_name}`, {
-        body: reminder.dosage || language === "ar" ? "حان وقت الدواء" : "Time to take your medicine",
+      const notification = new Notification(`💊 ${reminder.medicine_name}`, {
+        body: reminder.dosage || (language === "ar" ? "حان وقت الدواء" : "Time to take your medicine"),
         icon: "/favicon.ico",
         tag: reminder.id,
+        requireInteraction: true,
       });
+      
+      // Close after 10 seconds
+      setTimeout(() => notification.close(), 10000);
     }
   };
 
