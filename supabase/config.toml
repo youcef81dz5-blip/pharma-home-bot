@@ -2,3 +2,6 @@ project_id = "swtwpydqvnnixothehiw"
 
 [functions.suggest-medicine]
 verify_jwt = false
+
+[functions.find-alternatives]
+verify_jwt = false

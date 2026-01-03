@@ -15,6 +15,7 @@ import {
   Syringe,
   Timer,
   BookOpen,
+  RefreshCw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,11 @@ const translations = {
     addError: "حدث خطأ أثناء الإضافة",
     loginRequired: "يجب تسجيل الدخول أولاً",
     goToLogin: "تسجيل الدخول",
+    findAlternative: "ابحث عن بديل",
+    searchingAlt: "جاري البحث...",
+    alternativeFound: "البدائل المتاحة",
+    noAlternative: "لم يتم العثور على بدائل",
+    alternativeError: "خطأ في البحث عن البدائل",
   },
   en: {
     addToInventory: "Add to Inventory",
@@ -44,6 +50,11 @@ const translations = {
     addError: "Error adding medicine",
     loginRequired: "Please login first",
     goToLogin: "Go to Login",
+    findAlternative: "Find Alternative",
+    searchingAlt: "Searching...",
+    alternativeFound: "Available Alternatives",
+    noAlternative: "No alternatives found",
+    alternativeError: "Error searching for alternatives",
   },
   fr: {
     addToInventory: "Ajouter à l'inventaire",
@@ -52,13 +63,28 @@ const translations = {
     addError: "Erreur lors de l'ajout",
     loginRequired: "Veuillez vous connecter",
     goToLogin: "Se connecter",
+    findAlternative: "Trouver une alternative",
+    searchingAlt: "Recherche...",
+    alternativeFound: "Alternatives disponibles",
+    noAlternative: "Aucune alternative trouvée",
+    alternativeError: "Erreur de recherche",
   },
 };
+
+interface Alternative {
+  name: string;
+  scientific_name: string;
+  manufacturer: string;
+  reason: string;
+}
 
 export function AnalysisResults({ result, imageBase64 }: AnalysisResultsProps) {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const [isAdding, setIsAdding] = useState(false);
+  const [isSearchingAlt, setIsSearchingAlt] = useState(false);
+  const [alternatives, setAlternatives] = useState<Alternative[]>([]);
+  const [showAlternatives, setShowAlternatives] = useState(false);
   const t = translations[language];
 
   const getExpiryStatusColor = (status: string) => {
@@ -147,10 +173,39 @@ export function AnalysisResults({ result, imageBase64 }: AnalysisResultsProps) {
     }
   };
 
+  const handleFindAlternatives = async () => {
+    setIsSearchingAlt(true);
+    setShowAlternatives(false);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('find-alternatives', {
+        body: {
+          medicineName: result.product_summary.name_ar,
+          scientificName: result.product_summary.scientific_name,
+          primaryUse: result.product_summary.primary_use,
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.alternatives && data.alternatives.length > 0) {
+        setAlternatives(data.alternatives);
+        setShowAlternatives(true);
+      } else {
+        toast.info(t.noAlternative);
+      }
+    } catch (error) {
+      console.error("Error finding alternatives:", error);
+      toast.error(t.alternativeError);
+    } finally {
+      setIsSearchingAlt(false);
+    }
+  };
+
   return (
     <div className="space-y-6 fade-in-up">
-      {/* Add to Inventory Button */}
-      <div className="flex justify-center">
+      {/* Action Buttons */}
+      <div className="flex flex-col sm:flex-row justify-center gap-3">
         <Button 
           onClick={handleAddToInventory} 
           disabled={isAdding}
@@ -164,7 +219,56 @@ export function AnalysisResults({ result, imageBase64 }: AnalysisResultsProps) {
           )}
           {isAdding ? t.adding : t.addToInventory}
         </Button>
+        
+        <Button 
+          onClick={handleFindAlternatives} 
+          disabled={isSearchingAlt}
+          variant="outline"
+          className="w-full sm:w-auto gap-2 border-primary/30 hover:bg-primary/10"
+          size="lg"
+        >
+          {isSearchingAlt ? (
+            <Loader2 className="h-5 w-5 animate-spin" />
+          ) : (
+            <RefreshCw className="h-5 w-5" />
+          )}
+          {isSearchingAlt ? t.searchingAlt : t.findAlternative}
+        </Button>
       </div>
+
+      {/* Alternatives Section */}
+      {showAlternatives && alternatives.length > 0 && (
+        <section className="glass-card rounded-2xl p-5 border-2 border-primary/30 bg-primary/5">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+              <RefreshCw className="h-5 w-5 text-primary" />
+            </div>
+            <h2 className="text-xl font-bold text-foreground">{t.alternativeFound}</h2>
+          </div>
+          <div className="space-y-3">
+            {alternatives.map((alt, idx) => (
+              <div
+                key={idx}
+                className="p-4 rounded-xl bg-background/50 border border-primary/20 slide-in-right"
+                style={{ animationDelay: `${idx * 0.1}s` }}
+              >
+                <h3 className="font-semibold text-primary text-lg">{alt.name}</h3>
+                <p className="text-sm text-muted-foreground">{alt.scientific_name}</p>
+                {alt.manufacturer && (
+                  <p className="text-xs text-muted-foreground mt-1">الشركة: {alt.manufacturer}</p>
+                )}
+                <p className="text-sm mt-2 text-foreground">{alt.reason}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 p-3 rounded-xl bg-warning/10 border border-warning/30">
+            <p className="text-sm text-warning flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4" />
+              استشر الطبيب أو الصيدلاني قبل استخدام أي بديل
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* Product Summary */}
       <section className="glass-card rounded-2xl p-5">
