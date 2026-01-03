@@ -14,6 +14,56 @@ export type Database = {
   }
   public: {
     Tables: {
+      medication_reminders: {
+        Row: {
+          created_at: string
+          days_of_week: number[]
+          dosage: string | null
+          id: string
+          is_active: boolean
+          medicine_id: string | null
+          medicine_name: string
+          notes: string | null
+          reminder_time: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          days_of_week?: number[]
+          dosage?: string | null
+          id?: string
+          is_active?: boolean
+          medicine_id?: string | null
+          medicine_name: string
+          notes?: string | null
+          reminder_time: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          days_of_week?: number[]
+          dosage?: string | null
+          id?: string
+          is_active?: boolean
+          medicine_id?: string | null
+          medicine_name?: string
+          notes?: string | null
+          reminder_time?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medication_reminders_medicine_id_fkey"
+            columns: ["medicine_id"]
+            isOneToOne: false
+            referencedRelation: "medicine_inventory"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       medicine_inventory: {
         Row: {
           created_at: string
