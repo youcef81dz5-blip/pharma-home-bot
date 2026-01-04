@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Bell, BellRing, Plus, Trash2, Clock, Pill, Volume2, Music, Play } from "lucide-react";
+import { Bell, BellRing, Plus, Trash2, Clock, Pill, Volume2, Music, Play, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -13,6 +13,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AddReminderDialog } from "./AddReminderDialog";
+import { EditReminderDialog } from "./EditReminderDialog";
 
 interface Reminder {
   id: string;
@@ -24,7 +25,7 @@ interface Reminder {
   is_active: boolean;
 }
 
-type Tone = "double" | "classic" | "soft";
+type Tone = "double" | "classic" | "soft" | "alarm" | "siren";
 
 const STORAGE_KEYS = {
   soundEnabled: "reminders:soundEnabled",
@@ -50,6 +51,9 @@ const translations = {
     sound: "الصوت",
     tone: "النغمة",
     testAlarm: "اختبار",
+    edit: "تعديل",
+    toneAlarm: "قوي طويل",
+    toneSiren: "صافرة",
     toneClassic: "كلاسيكي",
     toneDouble: "مزدوج",
     toneSoft: "هادئ",
@@ -69,14 +73,17 @@ const translations = {
     notificationPermission: "Please allow notifications for reminders",
     days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
     everyDay: "Every day",
-    alarmSettings: "Alarm settings",
-    sound: "Sound",
-    tone: "Tone",
-    testAlarm: "Test",
-    toneClassic: "Classic",
-    toneDouble: "Double",
-    toneSoft: "Soft",
-    soundBlockedHint: "Browsers may block sound until you press (Test) once.",
+     alarmSettings: "Alarm settings",
+     sound: "Sound",
+     tone: "Tone",
+     testAlarm: "Test",
+     edit: "Edit",
+     toneAlarm: "Loud (Long)",
+     toneSiren: "Siren",
+     toneClassic: "Classic",
+     toneDouble: "Double",
+     toneSoft: "Soft",
+     soundBlockedHint: "Browsers may block sound until you press (Test) once.",
   },
   fr: {
     title: "Rappels de Médicaments",
@@ -92,14 +99,17 @@ const translations = {
     notificationPermission: "Veuillez autoriser les notifications",
     days: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
     everyDay: "Tous les jours",
-    alarmSettings: "Paramètres d'alarme",
-    sound: "Son",
-    tone: "Tonalité",
-    testAlarm: "Tester",
-    toneClassic: "Classique",
-    toneDouble: "Double",
-    toneSoft: "Doux",
-    soundBlockedHint: "Les navigateurs peuvent bloquer le son jusqu'à un clic sur (Tester).",
+     alarmSettings: "Paramètres d'alarme",
+     sound: "Son",
+     tone: "Tonalité",
+     testAlarm: "Tester",
+     edit: "Modifier",
+     toneAlarm: "Fort (Long)",
+     toneSiren: "Sirène",
+     toneClassic: "Classique",
+     toneDouble: "Double",
+     toneSoft: "Doux",
+     soundBlockedHint: "Les navigateurs peuvent bloquer le son jusqu'à un clic sur (Tester).",
   },
 };
 
@@ -116,7 +126,7 @@ function readBool(key: string, defaultValue: boolean) {
 function readTone(key: string, defaultValue: Tone): Tone {
   try {
     const v = localStorage.getItem(key) as Tone | null;
-    if (v === "classic" || v === "double" || v === "soft") return v;
+    if (v === "classic" || v === "double" || v === "soft" || v === "alarm" || v === "siren") return v;
     return defaultValue;
   } catch {
     return defaultValue;
@@ -130,6 +140,8 @@ export function MedicationReminders() {
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingReminder, setEditingReminder] = useState<Reminder | null>(null);
 
   const [soundEnabled, setSoundEnabled] = useState<boolean>(() =>
     readBool(STORAGE_KEYS.soundEnabled, true)
@@ -192,6 +204,21 @@ export function MedicationReminders() {
     return audioCtxRef.current;
   }, []);
 
+  // Try to unlock audio on the first user interaction to make alarms reliable on mobile browsers.
+  useEffect(() => {
+    const unlock = () => {
+      void getAudioContext();
+    };
+
+    window.addEventListener("pointerdown", unlock, { once: true });
+    window.addEventListener("touchstart", unlock, { once: true });
+
+    return () => {
+      window.removeEventListener("pointerdown", unlock);
+      window.removeEventListener("touchstart", unlock);
+    };
+  }, [getAudioContext]);
+
   const playTone = useCallback(
     async (selectedTone: Tone) => {
       const ctx = await getAudioContext();
@@ -200,11 +227,17 @@ export function MedicationReminders() {
 
       const now = ctx.currentTime;
 
-      const beep = (freq: number, startOffset: number, duration: number, gain: number) => {
+      const beep = (
+        freq: number,
+        startOffset: number,
+        duration: number,
+        gain: number,
+        type: OscillatorType = "sine"
+      ) => {
         const osc = ctx.createOscillator();
         const g = ctx.createGain();
 
-        osc.type = "sine";
+        osc.type = type;
         osc.frequency.setValueAtTime(freq, now + startOffset);
 
         g.gain.setValueAtTime(0.0001, now + startOffset);
@@ -226,6 +259,56 @@ export function MedicationReminders() {
           }
         };
       };
+
+      // Strong + long alarm (about ~10 seconds)
+      if (selectedTone === "alarm") {
+        const step = 0.7;
+        const repeats = 14; // ~9.8s
+        for (let i = 0; i < repeats; i++) {
+          const t0 = i * step;
+          beep(880, t0, 0.55, 0.38, "square");
+          beep(988, t0 + 0.28, 0.22, 0.22, "square");
+        }
+        return true;
+      }
+
+      // Siren-like sweep (about ~8 seconds)
+      if (selectedTone === "siren") {
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+
+        osc.type = "sawtooth";
+        g.gain.setValueAtTime(0.0001, now);
+        g.gain.exponentialRampToValueAtTime(0.26, now + 0.05);
+
+        const duration = 8;
+        const cycle = 0.8;
+        const cycles = Math.floor(duration / cycle);
+
+        for (let i = 0; i < cycles; i++) {
+          const start = now + i * cycle;
+          osc.frequency.setValueAtTime(520, start);
+          osc.frequency.linearRampToValueAtTime(1200, start + cycle / 2);
+          osc.frequency.linearRampToValueAtTime(520, start + cycle);
+        }
+
+        osc.connect(g);
+        g.connect(ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + duration);
+
+        osc.onended = () => {
+          try {
+            osc.disconnect();
+            g.disconnect();
+          } catch {
+            // ignore
+          }
+        };
+
+        return true;
+      }
 
       if (selectedTone === "classic") {
         beep(880, 0, 0.55, 0.22);
@@ -312,6 +395,28 @@ export function MedicationReminders() {
       document.removeEventListener("visibilitychange", onVisibility);
     };
   }, [reminders, showNotification]);
+
+  const openEdit = (reminder: Reminder) => {
+    setEditingReminder(reminder);
+    setEditDialogOpen(true);
+  };
+
+  const updateReminder = async (
+    id: string,
+    updates: Pick<Reminder, "reminder_time" | "days_of_week" | "dosage">
+  ) => {
+    try {
+      const { error } = await supabase.from("medication_reminders").update(updates).eq("id", id);
+      if (error) throw error;
+
+      setReminders((prev) => prev.map((r) => (r.id === id ? { ...r, ...updates } : r)));
+      toast.success(t.updateSuccess);
+    } catch (error) {
+      console.error("Error updating reminder:", error);
+      toast.error(t.updateError);
+      throw error;
+    }
+  };
 
   const toggleReminder = async (id: string, isActive: boolean) => {
     try {
@@ -436,6 +541,8 @@ export function MedicationReminders() {
                 <SelectValue placeholder={t.tone} />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="alarm">{t.toneAlarm}</SelectItem>
+                <SelectItem value="siren">{t.toneSiren}</SelectItem>
                 <SelectItem value="double">{t.toneDouble}</SelectItem>
                 <SelectItem value="classic">{t.toneClassic}</SelectItem>
                 <SelectItem value="soft">{t.toneSoft}</SelectItem>
@@ -484,8 +591,21 @@ export function MedicationReminders() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <Switch checked={reminder.is_active} onCheckedChange={(checked) => toggleReminder(reminder.id, checked)} />
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => openEdit(reminder)}
+                  aria-label={t.edit}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
+
+                <Switch
+                  checked={reminder.is_active}
+                  onCheckedChange={(checked) => toggleReminder(reminder.id, checked)}
+                />
                 <Button
                   variant="ghost"
                   size="icon"
@@ -501,6 +621,18 @@ export function MedicationReminders() {
       )}
 
       <AddReminderDialog open={dialogOpen} onOpenChange={setDialogOpen} onSuccess={fetchReminders} />
+      <EditReminderDialog
+        open={editDialogOpen}
+        onOpenChange={(open) => {
+          setEditDialogOpen(open);
+          if (!open) setEditingReminder(null);
+        }}
+        reminder={editingReminder}
+        onSave={async (updates) => {
+          if (!editingReminder) return;
+          await updateReminder(editingReminder.id, updates);
+        }}
+      />
     </div>
   );
 }
