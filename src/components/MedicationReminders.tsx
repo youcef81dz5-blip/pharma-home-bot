@@ -1,7 +1,14 @@
-import { useState, useEffect, useCallback } from "react";
-import { Bell, BellRing, Plus, Trash2, Clock, Pill, Power } from "lucide-react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { Bell, BellRing, Plus, Trash2, Clock, Pill, Volume2, Music, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -16,6 +23,13 @@ interface Reminder {
   notes: string | null;
   is_active: boolean;
 }
+
+type Tone = "double" | "classic" | "soft";
+
+const STORAGE_KEYS = {
+  soundEnabled: "reminders:soundEnabled",
+  tone: "reminders:tone",
+} as const;
 
 const translations = {
   ar: {
@@ -32,6 +46,14 @@ const translations = {
     notificationPermission: "يرجى السماح بالإشعارات للتذكيرات",
     days: ["أحد", "إثنين", "ثلاثاء", "أربعاء", "خميس", "جمعة", "سبت"],
     everyDay: "كل يوم",
+    alarmSettings: "إعدادات المنبه",
+    sound: "الصوت",
+    tone: "النغمة",
+    testAlarm: "اختبار",
+    toneClassic: "كلاسيكي",
+    toneDouble: "مزدوج",
+    toneSoft: "هادئ",
+    soundBlockedHint: "قد يمنع المتصفح الصوت حتى تضغط (اختبار) مرة واحدة.",
   },
   en: {
     title: "Medication Reminders",
@@ -47,6 +69,14 @@ const translations = {
     notificationPermission: "Please allow notifications for reminders",
     days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
     everyDay: "Every day",
+    alarmSettings: "Alarm settings",
+    sound: "Sound",
+    tone: "Tone",
+    testAlarm: "Test",
+    toneClassic: "Classic",
+    toneDouble: "Double",
+    toneSoft: "Soft",
+    soundBlockedHint: "Browsers may block sound until you press (Test) once.",
   },
   fr: {
     title: "Rappels de Médicaments",
@@ -62,19 +92,58 @@ const translations = {
     notificationPermission: "Veuillez autoriser les notifications",
     days: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
     everyDay: "Tous les jours",
+    alarmSettings: "Paramètres d'alarme",
+    sound: "Son",
+    tone: "Tonalité",
+    testAlarm: "Tester",
+    toneClassic: "Classique",
+    toneDouble: "Double",
+    toneSoft: "Doux",
+    soundBlockedHint: "Les navigateurs peuvent bloquer le son jusqu'à un clic sur (Tester).",
   },
 };
+
+function readBool(key: string, defaultValue: boolean) {
+  try {
+    const v = localStorage.getItem(key);
+    if (v === null) return defaultValue;
+    return v === "true";
+  } catch {
+    return defaultValue;
+  }
+}
+
+function readTone(key: string, defaultValue: Tone): Tone {
+  try {
+    const v = localStorage.getItem(key) as Tone | null;
+    if (v === "classic" || v === "double" || v === "soft") return v;
+    return defaultValue;
+  } catch {
+    return defaultValue;
+  }
+}
 
 export function MedicationReminders() {
   const { language } = useLanguage();
   const t = translations[language];
+
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
 
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(() =>
+    readBool(STORAGE_KEYS.soundEnabled, true)
+  );
+  const [tone, setTone] = useState<Tone>(() => readTone(STORAGE_KEYS.tone, "double"));
+
+  const lastFiredRef = useRef<Record<string, string>>({});
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
   const fetchReminders = useCallback(async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
 
       const { data, error } = await supabase
@@ -103,92 +172,146 @@ export function MedicationReminders() {
     }
   }, []);
 
-  // Check reminders every minute and on mount
+  const getAudioContext = useCallback(async () => {
+    const Ctx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!Ctx) return null;
+
+    if (!audioCtxRef.current) {
+      audioCtxRef.current = new Ctx();
+    }
+
+    // Resume if suspended (may fail without a user gesture)
+    if (audioCtxRef.current.state === "suspended") {
+      try {
+        await audioCtxRef.current.resume();
+      } catch {
+        // ignore
+      }
+    }
+
+    return audioCtxRef.current;
+  }, []);
+
+  const playTone = useCallback(
+    async (selectedTone: Tone) => {
+      const ctx = await getAudioContext();
+      if (!ctx) return false;
+      if (ctx.state !== "running") return false;
+
+      const now = ctx.currentTime;
+
+      const beep = (freq: number, startOffset: number, duration: number, gain: number) => {
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, now + startOffset);
+
+        g.gain.setValueAtTime(0.0001, now + startOffset);
+        g.gain.exponentialRampToValueAtTime(gain, now + startOffset + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + startOffset + duration);
+
+        osc.connect(g);
+        g.connect(ctx.destination);
+
+        osc.start(now + startOffset);
+        osc.stop(now + startOffset + duration + 0.02);
+
+        osc.onended = () => {
+          try {
+            osc.disconnect();
+            g.disconnect();
+          } catch {
+            // ignore
+          }
+        };
+      };
+
+      if (selectedTone === "classic") {
+        beep(880, 0, 0.55, 0.22);
+        return true;
+      }
+
+      if (selectedTone === "soft") {
+        beep(523.25, 0, 0.75, 0.16);
+        return true;
+      }
+
+      // double (default)
+      beep(880, 0, 0.45, 0.22);
+      beep(1046.5, 0.22, 0.45, 0.22);
+      return true;
+    },
+    [getAudioContext]
+  );
+
+  const showNotification = useCallback(
+    async (reminder: Reminder) => {
+      // Always show in-app toast
+      toast.info(`💊 ${reminder.medicine_name}`, {
+        description:
+          reminder.dosage || (language === "ar" ? "حان وقت الدواء" : "Time to take your medicine"),
+        duration: 10000,
+      });
+
+      // Play sound if enabled
+      if (soundEnabled) {
+        const played = await playTone(tone);
+        if (!played) {
+          // Audio likely blocked until a user gesture
+          toast(t.soundBlockedHint, { duration: 6000 });
+        }
+      }
+
+      // Also show browser notification if permission granted
+      if ("Notification" in window && Notification.permission === "granted") {
+        const notification = new Notification(`💊 ${reminder.medicine_name}`, {
+          body:
+            reminder.dosage || (language === "ar" ? "حان وقت الدواء" : "Time to take your medicine"),
+          icon: "/favicon.ico",
+          tag: reminder.id,
+          requireInteraction: true,
+        });
+
+        setTimeout(() => notification.close(), 10000);
+      }
+    },
+    [language, playTone, soundEnabled, t.soundBlockedHint, tone]
+  );
+
+  // Check reminders frequently (prevents missing the exact minute) and de-duplicate per minute.
   useEffect(() => {
     const checkReminders = () => {
       const now = new Date();
-      const currentTime = now.toTimeString().slice(0, 5);
+      const currentTime = now.toTimeString().slice(0, 5); // HH:MM
       const currentDay = now.getDay();
+      const minuteKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()} ${currentTime}`;
 
       reminders.forEach((reminder) => {
-        if (
-          reminder.is_active &&
-          reminder.reminder_time.slice(0, 5) === currentTime &&
-          reminder.days_of_week.includes(currentDay)
-        ) {
-          showNotification(reminder);
-        }
+        if (!reminder.is_active) return;
+        if (!reminder.days_of_week.includes(currentDay)) return;
+        if (reminder.reminder_time.slice(0, 5) !== currentTime) return;
+
+        if (lastFiredRef.current[reminder.id] === minuteKey) return;
+        lastFiredRef.current[reminder.id] = minuteKey;
+
+        void showNotification(reminder);
       });
     };
 
-    // Check immediately on mount
     checkReminders();
-    
-    const interval = setInterval(checkReminders, 60000);
-    return () => clearInterval(interval);
-  }, [reminders, language]);
+    const interval = setInterval(checkReminders, 10_000);
 
-  const playNotificationSound = () => {
-    try {
-      // Create audio context for notification sound
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      // Pleasant notification tone
-      oscillator.frequency.setValueAtTime(880, audioContext.currentTime); // A5
-      oscillator.type = "sine";
-      
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.5);
-      
-      // Play second beep
-      setTimeout(() => {
-        const osc2 = audioContext.createOscillator();
-        const gain2 = audioContext.createGain();
-        osc2.connect(gain2);
-        gain2.connect(audioContext.destination);
-        osc2.frequency.setValueAtTime(1046.5, audioContext.currentTime); // C6
-        osc2.type = "sine";
-        gain2.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-        osc2.start();
-        osc2.stop(audioContext.currentTime + 0.5);
-      }, 200);
-    } catch (error) {
-      console.error("Error playing sound:", error);
-    }
-  };
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") checkReminders();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
 
-  const showNotification = (reminder: Reminder) => {
-    // Play sound first
-    playNotificationSound();
-    
-    // Show toast notification (always works)
-    toast.info(`💊 ${reminder.medicine_name}`, {
-      description: reminder.dosage || (language === "ar" ? "حان وقت الدواء" : "Time to take your medicine"),
-      duration: 10000,
-    });
-
-    // Also show browser notification if permission granted
-    if ("Notification" in window && Notification.permission === "granted") {
-      const notification = new Notification(`💊 ${reminder.medicine_name}`, {
-        body: reminder.dosage || (language === "ar" ? "حان وقت الدواء" : "Time to take your medicine"),
-        icon: "/favicon.ico",
-        tag: reminder.id,
-        requireInteraction: true,
-      });
-      
-      // Close after 10 seconds
-      setTimeout(() => notification.close(), 10000);
-    }
-  };
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [reminders, showNotification]);
 
   const toggleReminder = async (id: string, isActive: boolean) => {
     try {
@@ -199,9 +322,7 @@ export function MedicationReminders() {
 
       if (error) throw error;
 
-      setReminders((prev) =>
-        prev.map((r) => (r.id === id ? { ...r, is_active: isActive } : r))
-      );
+      setReminders((prev) => prev.map((r) => (r.id === id ? { ...r, is_active: isActive } : r)));
       toast.success(t.updateSuccess);
     } catch (error) {
       console.error("Error updating reminder:", error);
@@ -211,10 +332,7 @@ export function MedicationReminders() {
 
   const deleteReminder = async (id: string) => {
     try {
-      const { error } = await supabase
-        .from("medication_reminders")
-        .delete()
-        .eq("id", id);
+      const { error } = await supabase.from("medication_reminders").delete().eq("id", id);
 
       if (error) throw error;
 
@@ -234,9 +352,38 @@ export function MedicationReminders() {
   const formatTime = (time: string) => {
     const [hours, minutes] = time.split(":");
     const h = parseInt(hours);
-    const period = h >= 12 ? (language === "ar" ? "م" : "PM") : (language === "ar" ? "ص" : "AM");
+    const period = h >= 12 ? (language === "ar" ? "م" : "PM") : language === "ar" ? "ص" : "AM";
     const displayHour = h > 12 ? h - 12 : h === 0 ? 12 : h;
     return `${displayHour}:${minutes} ${period}`;
+  };
+
+  const saveSoundEnabled = (enabled: boolean) => {
+    setSoundEnabled(enabled);
+    try {
+      localStorage.setItem(STORAGE_KEYS.soundEnabled, String(enabled));
+    } catch {
+      // ignore
+    }
+  };
+
+  const saveTone = (newTone: Tone) => {
+    setTone(newTone);
+    try {
+      localStorage.setItem(STORAGE_KEYS.tone, newTone);
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleTestAlarm = async () => {
+    // A user gesture (click) here helps browsers allow sound.
+    const played = await playTone(tone);
+    if (!played) {
+      toast.error(language === "ar" ? "تعذر تشغيل الصوت (تحقق من إعدادات المتصفح)" : "Couldn't play sound");
+      return;
+    }
+
+    toast.success(language === "ar" ? "تم تشغيل اختبار المنبه" : "Alarm test played");
   };
 
   if (isLoading) {
@@ -253,7 +400,7 @@ export function MedicationReminders() {
 
   return (
     <div className="glass-card rounded-2xl p-6">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
             <BellRing className="h-5 w-5 text-primary" />
@@ -264,6 +411,45 @@ export function MedicationReminders() {
           <Plus className="h-4 w-4" />
           {t.addReminder}
         </Button>
+      </div>
+
+      {/* Alarm settings */}
+      <div className="mb-6 rounded-xl border border-border/50 bg-muted/20 p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <Bell className="h-4 w-4 text-muted-foreground" />
+          <p className="text-sm font-semibold text-foreground">{t.alarmSettings}</p>
+        </div>
+
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center justify-between sm:justify-start gap-3">
+            <div className="flex items-center gap-2">
+              <Volume2 className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm text-foreground">{t.sound}</span>
+            </div>
+            <Switch checked={soundEnabled} onCheckedChange={saveSoundEnabled} />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Music className="h-4 w-4 text-muted-foreground" />
+            <Select value={tone} onValueChange={(v) => saveTone(v as Tone)}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder={t.tone} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="double">{t.toneDouble}</SelectItem>
+                <SelectItem value="classic">{t.toneClassic}</SelectItem>
+                <SelectItem value="soft">{t.toneSoft}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <Button variant="outline" size="sm" onClick={handleTestAlarm} className="gap-2">
+            <Play className="h-4 w-4" />
+            {t.testAlarm}
+          </Button>
+        </div>
+
+        <p className="mt-3 text-xs text-muted-foreground">{t.soundBlockedHint}</p>
       </div>
 
       {reminders.length === 0 ? (
@@ -277,9 +463,7 @@ export function MedicationReminders() {
             <div
               key={reminder.id}
               className={`flex items-center justify-between p-4 rounded-xl border transition-all ${
-                reminder.is_active
-                  ? "bg-primary/5 border-primary/20"
-                  : "bg-muted/50 border-muted opacity-60"
+                reminder.is_active ? "bg-primary/5 border-primary/20" : "bg-muted/50 border-muted opacity-60"
               }`}
             >
               <div className="flex items-center gap-4">
@@ -287,9 +471,7 @@ export function MedicationReminders() {
                   <Pill className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground">
-                    {reminder.medicine_name}
-                  </h3>
+                  <h3 className="font-semibold text-foreground">{reminder.medicine_name}</h3>
                   <div className="flex items-center gap-3 text-sm text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <Clock className="h-3 w-3" />
@@ -298,17 +480,12 @@ export function MedicationReminders() {
                     <span>•</span>
                     <span>{formatDays(reminder.days_of_week)}</span>
                   </div>
-                  {reminder.dosage && (
-                    <p className="text-xs text-primary mt-1">{reminder.dosage}</p>
-                  )}
+                  {reminder.dosage && <p className="text-xs text-primary mt-1">{reminder.dosage}</p>}
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
-                <Switch
-                  checked={reminder.is_active}
-                  onCheckedChange={(checked) => toggleReminder(reminder.id, checked)}
-                />
+                <Switch checked={reminder.is_active} onCheckedChange={(checked) => toggleReminder(reminder.id, checked)} />
                 <Button
                   variant="ghost"
                   size="icon"
@@ -323,11 +500,7 @@ export function MedicationReminders() {
         </div>
       )}
 
-      <AddReminderDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        onSuccess={fetchReminders}
-      />
+      <AddReminderDialog open={dialogOpen} onOpenChange={setDialogOpen} onSuccess={fetchReminders} />
     </div>
   );
 }
