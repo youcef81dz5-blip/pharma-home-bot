@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Bell, BellRing, Plus, Trash2, Clock, Pill, Volume2, Music, Play, Pencil, ArrowRight, ArrowLeft, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -150,8 +150,10 @@ function readTone(key: string, defaultValue: Tone): Tone {
 export default function Reminders() {
   const { language, dir } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
   const t = translations[language];
   const ArrowIcon = dir === "rtl" ? ArrowRight : ArrowLeft;
+  const redirectPath = location.pathname + location.search;
 
   const [user, setUser] = useState<any>(null);
   const [reminders, setReminders] = useState<Reminder[]>([]);
@@ -171,26 +173,30 @@ export default function Reminders() {
   // Check auth
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session) {
         toast.error(t.loginRequired);
-        navigate("/auth");
+        navigate(`/auth?redirect=${encodeURIComponent(redirectPath)}`, { replace: true });
         return;
       }
       setUser(session.user);
     };
     checkUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_, session) => {
       if (!session) {
-        navigate("/auth");
+        navigate(`/auth?redirect=${encodeURIComponent(redirectPath)}`, { replace: true });
       } else {
         setUser(session.user);
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate, t.loginRequired]);
+  }, [navigate, redirectPath, t.loginRequired]);
 
   const fetchReminders = useCallback(async () => {
     try {
