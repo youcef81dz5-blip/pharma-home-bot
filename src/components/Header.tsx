@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Pill, Package } from "lucide-react";
+import { Pill, Package, BellRing } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeLanguageToggle } from "@/components/ThemeLanguageToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -21,6 +21,12 @@ export function Header() {
         </div>
         <div className="flex items-center gap-2">
           <ThemeLanguageToggle />
+          <Link to="/reminders">
+            <Button variant="outline" size="sm" className="gap-2">
+              <BellRing className="h-4 w-4" />
+              <span className="hidden sm:inline">{t("reminders")}</span>
+            </Button>
+          </Link>
           <Link to="/inventory">
             <Button variant="outline" size="sm" className="gap-2">
               <Package className="h-4 w-4" />

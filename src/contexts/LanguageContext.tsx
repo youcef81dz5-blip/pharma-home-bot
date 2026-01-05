@@ -27,6 +27,11 @@ export const translations: Translations = {
     en: "Inventory",
     fr: "Inventaire",
   },
+  reminders: {
+    ar: "التذكيرات",
+    en: "Reminders",
+    fr: "Rappels",
+  },
   // Hero Section
   heroTitle: {
     ar: "حلل مكونات أدويتك بالذكاء الاصطناعي",
@@ -530,6 +535,26 @@ export const translations: Translations = {
     ar: "بياناتك محمية ومشفرة، ولا يمكن لأحد الوصول إليها سواك",
     en: "Your data is protected and encrypted, only you can access it",
     fr: "Vos données sont protégées et chiffrées, vous seul pouvez y accéder",
+  },
+  featureReminders: {
+    ar: "تذكيرات الأدوية",
+    en: "Medication Reminders",
+    fr: "Rappels de Médicaments",
+  },
+  featureRemindersDesc: {
+    ar: "منبهات صوتية قوية قابلة للتخصيص لتذكيرك بمواعيد أدويتك مع إمكانية اختيار النغمة والتعديل",
+    en: "Customizable loud alarms to remind you of medication times with tone selection and editing options",
+    fr: "Alarmes personnalisables pour vous rappeler les heures de prise de médicaments avec sélection de tonalité",
+  },
+  featureAlternatives: {
+    ar: "البحث عن بدائل الأدوية",
+    en: "Find Medicine Alternatives",
+    fr: "Trouver des Alternatives aux Médicaments",
+  },
+  featureAlternativesDesc: {
+    ar: "البحث عن بدائل للأدوية غير المتوفرة باستخدام الذكاء الاصطناعي مع تفاصيل كاملة",
+    en: "Find alternatives for unavailable medicines using AI with complete details",
+    fr: "Trouvez des alternatives aux médicaments indisponibles grâce à l'IA avec tous les détails",
   },
   howItWorks: {
     ar: "كيف يعمل التطبيق؟",
