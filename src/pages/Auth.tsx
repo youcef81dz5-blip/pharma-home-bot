@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,8 +15,15 @@ export default function Auth() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const { t, dir } = useLanguage();
+
+  const redirectTo = (() => {
+    const params = new URLSearchParams(location.search);
+    const r = params.get("redirect");
+    return r && r.startsWith("/") ? r : "/inventory";
+  })();
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +40,7 @@ export default function Auth() {
           title: t("loginSuccess"),
           description: t("welcomeBack"),
         });
-        navigate("/inventory");
+        navigate(redirectTo);
       } else {
         const { error } = await supabase.auth.signUp({
           email,
@@ -47,7 +54,7 @@ export default function Auth() {
           title: t("accountCreated"),
           description: t("welcomeBack"),
         });
-        navigate("/inventory");
+        navigate(redirectTo);
       }
     } catch (error: any) {
       let message = t("error");
