@@ -54,6 +54,16 @@ const About = () => {
       icon: <Shield className="h-8 w-8" />,
       titleKey: "featureSecurity",
       descKey: "featureSecurityDesc"
+    },
+    {
+      icon: <Clock className="h-8 w-8" />,
+      titleKey: "featureReminders",
+      descKey: "featureRemindersDesc"
+    },
+    {
+      icon: <Pill className="h-8 w-8" />,
+      titleKey: "featureAlternatives",
+      descKey: "featureAlternativesDesc"
     }
   ];
 
