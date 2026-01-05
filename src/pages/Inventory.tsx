@@ -8,7 +8,7 @@ import { MedicineCard } from "@/components/MedicineCard";
 import { AddMedicineDialog } from "@/components/AddMedicineDialog";
 import { AddFromImageDialog } from "@/components/AddFromImageDialog";
 import { SymptomSearch } from "@/components/SymptomSearch";
-import { MedicationReminders } from "@/components/MedicationReminders";
+
 import { ThemeLanguageToggle } from "@/components/ThemeLanguageToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Plus, Search, Package, AlertTriangle, LogOut, Camera, Upload } from "lucide-react";
@@ -198,10 +198,6 @@ export default function Inventory() {
           </div>
         )}
 
-        {/* Medication Reminders */}
-        <div className="mb-6">
-          <MedicationReminders />
-        </div>
 
         {/* Symptom Search */}
         {medicines.length > 0 && (
