@@ -34,16 +34,19 @@ serve(async (req) => {
     const prompt = `أنت صيدلاني خبير. المستخدم يبحث عن بدائل للدواء التالي:
     
 اسم الدواء: ${medicineName}
-الاسم العلمي: ${scientificName || "غير متوفر"}
+الاسم العلمي (المادة الفعالة): ${scientificName || "غير متوفر"}
 الاستخدام الأساسي: ${primaryUse || "غير متوفر"}
 
-قدم 3-5 بدائل متاحة لهذا الدواء مع ذكر:
-1. اسم البديل
-2. الاسم العلمي للبديل
-3. الشركة المصنعة (إن أمكن)
-4. سبب كونه بديلاً مناسباً
+⚠️ تعليمات مهمة جداً:
+- قدم فقط الأدوية التي تحتوي على نفس المادة الفعالة (Generic Name) بالضبط
+- لا تقترح أي بدائل علاجية مختلفة حتى لو كانت تعالج نفس المرض
+- البدائل المطلوبة هي أسماء تجارية مختلفة لنفس المادة الفعالة فقط
 
-ملاحظة: يجب أن تكون البدائل من نفس الفئة العلاجية وتحتوي على نفس المادة الفعالة أو مادة مشابهة.`;
+قدم 3-5 بدائل متاحة مع ذكر:
+1. اسم البديل التجاري
+2. الاسم العلمي (يجب أن يكون مطابقاً للدواء الأصلي)
+3. الشركة المصنعة
+4. ملاحظة بسيطة (مثل: التركيز، الشكل الصيدلاني)`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -54,7 +57,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages: [
-          { role: "system", content: "أنت صيدلاني خبير متخصص في البدائل الدوائية. قدم إجابات دقيقة وموثوقة." },
+          { role: "system", content: "أنت صيدلاني خبير. مهمتك هي إيجاد أسماء تجارية بديلة تحتوي على نفس المادة الفعالة بالضبط. لا تقترح أدوية بمواد فعالة مختلفة أبداً." },
           { role: "user", content: prompt }
         ],
         tools: [
@@ -62,7 +65,7 @@ serve(async (req) => {
             type: "function",
             function: {
               name: "provide_alternatives",
-              description: "Return medicine alternatives",
+              description: "Return medicine alternatives with same active ingredient only",
               parameters: {
                 type: "object",
                 properties: {
@@ -71,17 +74,16 @@ serve(async (req) => {
                     items: {
                       type: "object",
                       properties: {
-                        name: { type: "string", description: "اسم البديل" },
-                        scientific_name: { type: "string", description: "الاسم العلمي" },
+                        name: { type: "string", description: "اسم البديل التجاري" },
+                        scientific_name: { type: "string", description: "الاسم العلمي (المادة الفعالة) - يجب أن يكون مطابقاً" },
                         manufacturer: { type: "string", description: "الشركة المصنعة" },
-                        reason: { type: "string", description: "سبب كونه بديلاً مناسباً" }
+                        reason: { type: "string", description: "ملاحظة عن التركيز أو الشكل الصيدلاني" }
                       },
                       required: ["name", "scientific_name", "reason"]
                     }
-                  },
-                  disclaimer: { type: "string", description: "إخلاء مسؤولية طبي" }
+                  }
                 },
-                required: ["alternatives", "disclaimer"]
+                required: ["alternatives"]
               }
             }
           }
@@ -131,7 +133,6 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         alternatives: [], 
-        disclaimer: content || "لم يتم العثور على بدائل",
         raw: content 
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
