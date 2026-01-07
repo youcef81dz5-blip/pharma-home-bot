@@ -261,10 +261,13 @@ export function AnalysisResults({ result, imageBase64 }: AnalysisResultsProps) {
               </div>
             ))}
           </div>
-          <div className="mt-4 p-3 rounded-xl bg-warning/10 border border-warning/30">
-            <p className="text-sm text-warning flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4" />
-              استشر الطبيب أو الصيدلاني قبل استخدام أي بديل
+          <div className="mt-4 p-4 rounded-xl bg-warning/10 border-2 border-warning/50">
+            <p className="text-base text-warning font-bold flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5" />
+              ⚠️ استشر الصيدلي قبل استخدام أي بديل
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              هذه البدائل تحتوي على نفس المادة الفعالة، لكن قد تختلف في التركيز أو الشكل الصيدلاني
             </p>
           </div>
         </section>
