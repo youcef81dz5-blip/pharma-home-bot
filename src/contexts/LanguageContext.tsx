@@ -616,6 +616,16 @@ export const translations: Translations = {
     en: "Start Now",
     fr: "Commencer Maintenant",
   },
+  continueWithGoogle: {
+    ar: "المتابعة بحساب Google",
+    en: "Continue with Google",
+    fr: "Continuer avec Google",
+  },
+  orContinueWith: {
+    ar: "أو المتابعة بـ",
+    en: "Or continue with",
+    fr: "Ou continuer avec",
+  },
 };
 
 interface LanguageContextType {
