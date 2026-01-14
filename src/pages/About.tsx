@@ -16,7 +16,9 @@ import {
   ArrowLeft,
   Sparkles,
   CheckCircle2,
-  Zap
+  Zap,
+  Wallet,
+  TrendingDown
 } from "lucide-react";
 
 const About = () => {
@@ -109,6 +111,28 @@ const About = () => {
             {t("aboutDescription")}
           </p>
         </div>
+
+        {/* Money Saving Banner - Main Slogan */}
+        <Card className="mb-8 border-2 border-green-500/50 bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-transparent shadow-lg">
+          <CardContent className="pt-6 pb-6">
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <div className="flex-shrink-0">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg">
+                  <Wallet className="h-10 w-10 text-white" />
+                </div>
+              </div>
+              <div className="text-center md:text-start flex-1">
+                <h2 className="text-2xl md:text-3xl font-bold text-green-600 dark:text-green-400 mb-2 flex items-center justify-center md:justify-start gap-2">
+                  <TrendingDown className="h-7 w-7" />
+                  {t("saveMoneySloganTitle")}
+                </h2>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  {t("saveMoneySloganDesc")}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* What is the App */}
         <Card className="mb-8 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
