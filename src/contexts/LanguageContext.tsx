@@ -461,6 +461,16 @@ export const translations: Translations = {
     en: "A smart app that helps you manage your home medicines and analyze their ingredients using AI",
     fr: "Une application intelligente qui vous aide à gérer vos médicaments à domicile et à analyser leurs ingrédients avec l'IA",
   },
+  saveMoneySloganTitle: {
+    ar: "وفّر أموالك مع صيدلي البيت!",
+    en: "Save Your Money with PHARMA HOME!",
+    fr: "Économisez Votre Argent avec PHARMA MAISON!",
+  },
+  saveMoneySloganDesc: {
+    ar: "لا تشترِ دواءً قد يكون موجوداً في بيتك! خاصية المخزون الذكي تُظهر لك كل الأدوية المتوفرة لديك، فتتجنب شراء أدوية مكررة وتوفّر مالك للأهم. اعرف ما عندك قبل ما تصرف!",
+    en: "Don't buy medicine that might already be at home! The smart inventory feature shows you all your available medicines, helping you avoid duplicate purchases and save money for what matters most. Know what you have before you spend!",
+    fr: "N'achetez pas de médicaments qui pourraient déjà être chez vous! La fonction d'inventaire intelligent vous montre tous vos médicaments disponibles, vous aidant à éviter les achats en double et à économiser de l'argent. Sachez ce que vous avez avant de dépenser!",
+  },
   whatIsApp: {
     ar: "ما هو صيدلي البيت؟",
     en: "What is PHARMA HOME?",
@@ -502,9 +512,9 @@ export const translations: Translations = {
     fr: "Gestion de l'Inventaire des Médicaments",
   },
   featureInventoryDesc: {
-    ar: "تتبع جميع أدوية منزلك في مكان واحد مع معلومات مفصلة عن كل دواء",
-    en: "Track all your home medicines in one place with detailed information about each",
-    fr: "Suivez tous vos médicaments à domicile en un seul endroit avec des informations détaillées",
+    ar: "تتبع جميع أدوية منزلك في مكان واحد ووفّر أموالك بتجنب شراء أدوية موجودة عندك",
+    en: "Track all your home medicines in one place and save money by avoiding duplicate purchases",
+    fr: "Suivez tous vos médicaments et économisez en évitant les achats en double",
   },
   featureSymptom: {
     ar: "البحث بالأعراض",
@@ -587,9 +597,9 @@ export const translations: Translations = {
     fr: "Pourquoi Choisir PHARMA MAISON?",
   },
   advantage1: {
-    ar: "مجاني بالكامل وسهل الاستخدام",
-    en: "Completely free and easy to use",
-    fr: "Entièrement gratuit et facile à utiliser",
+    ar: "يوفّر لك المال بتجنب شراء أدوية موجودة في بيتك",
+    en: "Saves you money by avoiding purchasing medicines already at home",
+    fr: "Vous fait économiser en évitant d'acheter des médicaments déjà chez vous",
   },
   advantage2: {
     ar: "يدعم اللغة العربية والإنجليزية والفرنسية",
