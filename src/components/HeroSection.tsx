@@ -5,6 +5,7 @@ const features = {
   ar: ["تحليل فوري", "كشف المخاطر", "تقرير مفصل"],
   en: ["Instant Analysis", "Risk Detection", "Detailed Report"],
   fr: ["Analyse Instantanée", "Détection des Risques", "Rapport Détaillé"],
+  es: ["Análisis Instantáneo", "Detección de Riesgos", "Informe Detallado"],
 };
 
 export function HeroSection() {

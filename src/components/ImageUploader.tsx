@@ -44,6 +44,17 @@ const labels = {
     photoTip: "⚠️ Conseils Photo Importants",
     photoTipText: "Pour une lecture précise, surtout des dates de péremption: Désactivez l'effet Vignette (bords sombres) dans les paramètres de l'appareil photo. Utilisez un bon éclairage uniforme et placez le médicament sur un fond clair/blanc. Assurez-vous que la date de péremption et les ingrédients sont clairs et lisibles.",
   },
+  es: {
+    uploadTitle: "Subir Imagen del Medicamento",
+    dragHint: "Arrastra la imagen aquí o elige de las opciones abajo",
+    uploadBtn: "Subir Imagen",
+    cameraBtn: "Tomar Foto",
+    analyzing: "Analizando...",
+    analyze: "Analizar Ingredientes",
+    imageAlt: "Imagen del medicamento",
+    photoTip: "⚠️ Consejos Importantes para la Foto",
+    photoTipText: "Para una lectura precisa, especialmente fechas de vencimiento: Desactiva el efecto Viñeta (bordes oscuros) en la configuración de la cámara. Usa buena iluminación uniforme y coloca el medicamento sobre un fondo claro/blanco. Asegúrate de que la fecha de vencimiento y los ingredientes sean claros y legibles en la foto.",
+  },
 };
 
 export function ImageUploader({ onImageSelect, isLoading }: ImageUploaderProps) {

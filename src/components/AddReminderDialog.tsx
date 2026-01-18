@@ -79,6 +79,25 @@ const translations = {
     fromInventory: "De l'inventaire",
     manual: "Saisie manuelle",
   },
+  es: {
+    title: "Agregar Nuevo Recordatorio",
+    selectMedicine: "Seleccionar Medicamento",
+    orEnterName: "O ingresa el nombre",
+    medicineName: "Nombre del Medicamento",
+    time: "Hora del Recordatorio",
+    dosage: "Dosis (opcional)",
+    dosagePlaceholder: "ej: Una tableta",
+    selectDays: "Días del Recordatorio",
+    days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+    add: "Agregar Recordatorio",
+    adding: "Agregando...",
+    success: "Recordatorio agregado exitosamente",
+    error: "Error al agregar recordatorio",
+    loginRequired: "Por favor inicia sesión primero",
+    selectAll: "Seleccionar Todo",
+    fromInventory: "Del Inventario",
+    manual: "Entrada Manual",
+  },
 };
 
 export function AddReminderDialog({ open, onOpenChange, onSuccess }: AddReminderDialogProps) {
