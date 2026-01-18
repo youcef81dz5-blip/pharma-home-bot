@@ -71,6 +71,20 @@ const translations = {
     cancel: "Annuler",
     requiredError: "Veuillez remplir les champs requis",
   },
+  es: {
+    title: "Editar Recordatorio",
+    medicine: "Medicamento",
+    time: "Hora del Recordatorio",
+    dosage: "Dosis (opcional)",
+    dosagePlaceholder: "ej: Una tableta",
+    selectDays: "Días del Recordatorio",
+    days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+    selectAll: "Seleccionar Todo",
+    save: "Guardar cambios",
+    saving: "Guardando...",
+    cancel: "Cancelar",
+    requiredError: "Por favor completa los campos requeridos",
+  },
 };
 
 export function EditReminderDialog({ open, onOpenChange, reminder, onSave }: EditReminderDialogProps) {

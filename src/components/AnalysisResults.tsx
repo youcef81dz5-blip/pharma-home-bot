@@ -69,6 +69,19 @@ const translations = {
     noAlternative: "Aucune alternative trouvée",
     alternativeError: "Erreur de recherche",
   },
+  es: {
+    addToInventory: "Agregar al Inventario",
+    adding: "Agregando...",
+    addSuccess: "Medicamento agregado al inventario exitosamente",
+    addError: "Error al agregar medicamento",
+    loginRequired: "Por favor inicia sesión primero",
+    goToLogin: "Ir a Iniciar Sesión",
+    findAlternative: "Buscar Alternativa",
+    searchingAlt: "Buscando...",
+    alternativeFound: "Alternativas Disponibles",
+    noAlternative: "No se encontraron alternativas",
+    alternativeError: "Error al buscar alternativas",
+  },
 };
 
 interface Alternative {

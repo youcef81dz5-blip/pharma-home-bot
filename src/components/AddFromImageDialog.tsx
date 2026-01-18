@@ -66,6 +66,21 @@ const labels = {
     error: "Erreur",
     loginRequired: "Veuillez d'abord vous connecter",
   },
+  es: {
+    title: "Agregar Medicamento desde Imagen",
+    uploadTitle: "Subir Imagen del Medicamento",
+    dragHint: "Arrastra la imagen aquí o elige de las opciones abajo",
+    uploadBtn: "Subir Imagen",
+    cameraBtn: "Tomar Foto",
+    analyzing: "Analizando y agregando...",
+    analyze: "Analizar y Agregar al Inventario",
+    photoTip: "Consejos para la Foto",
+    photoTipText: "Asegura buena iluminación y evita sombras. Captura los ingredientes claramente sin efecto viñeta (bordes oscuros).",
+    success: "Medicamento Agregado",
+    successDesc: "Imagen analizada y medicamento agregado al inventario exitosamente",
+    error: "Error",
+    loginRequired: "Por favor inicia sesión primero",
+  },
 };
 
 export function AddFromImageDialog({ open, onOpenChange, onSuccess }: AddFromImageDialogProps) {
