@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Bell, BellRing, Plus, Trash2, Clock, Pill, Volume2, Music, Play, Pencil, ArrowRight, ArrowLeft, LogOut } from "lucide-react";
+import { Bell, BellRing, Plus, Trash2, Clock, Pill, Volume2, Music, Play, Pencil, ArrowRight, ArrowLeft, LogOut, Power, PowerOff, AlarmClock, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -38,8 +38,10 @@ const translations = {
   ar: {
     title: "تذكيرات الأدوية",
     pageSubtitle: "إدارة تذكيرات أدويتك",
-    noReminders: "لا توجد تذكيرات حتى الآن",
-    addReminder: "إضافة تذكير",
+    noReminders: "لا توجد تذكيرات",
+    noRemindersSubtitle: "اضغط على الزر أدناه لإضافة تذكير جديد",
+    addReminder: "إضافة تذكير جديد",
+    addReminderShort: "إضافة",
     delete: "حذف",
     active: "مفعل",
     inactive: "متوقف",
@@ -49,27 +51,33 @@ const translations = {
     updateError: "خطأ في تحديث التذكير",
     notificationPermission: "يرجى السماح بالإشعارات للتذكيرات",
     days: ["أحد", "إثنين", "ثلاثاء", "أربعاء", "خميس", "جمعة", "سبت"],
+    daysShort: ["أ", "ث", "ث", "أ", "خ", "ج", "س"],
     everyDay: "كل يوم",
     alarmSettings: "إعدادات المنبه",
     sound: "الصوت",
     tone: "النغمة",
-    testAlarm: "اختبار",
+    testAlarm: "اختبار الصوت",
     edit: "تعديل",
     toneAlarm: "قوي طويل",
     toneSiren: "صافرة",
     toneClassic: "كلاسيكي",
     toneDouble: "مزدوج",
     toneSoft: "هادئ",
-    soundBlockedHint: "قد يمنع المتصفح الصوت حتى تضغط (اختبار) مرة واحدة.",
+    soundBlockedHint: "اضغط (اختبار الصوت) لتفعيل المنبه",
     backToHome: "العودة للرئيسية",
-    logout: "تسجيل الخروج",
+    logout: "خروج",
     loginRequired: "يجب تسجيل الدخول أولاً",
+    on: "تشغيل",
+    off: "إيقاف",
+    tapToToggle: "اضغط للتفعيل/الإيقاف",
   },
   en: {
     title: "Medication Reminders",
     pageSubtitle: "Manage your medication reminders",
-    noReminders: "No reminders yet",
-    addReminder: "Add Reminder",
+    noReminders: "No reminders",
+    noRemindersSubtitle: "Tap the button below to add a new reminder",
+    addReminder: "Add New Reminder",
+    addReminderShort: "Add",
     delete: "Delete",
     active: "Active",
     inactive: "Inactive",
@@ -79,27 +87,33 @@ const translations = {
     updateError: "Error updating reminder",
     notificationPermission: "Please allow notifications for reminders",
     days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    daysShort: ["S", "M", "T", "W", "T", "F", "S"],
     everyDay: "Every day",
     alarmSettings: "Alarm settings",
     sound: "Sound",
     tone: "Tone",
-    testAlarm: "Test",
+    testAlarm: "Test Sound",
     edit: "Edit",
     toneAlarm: "Loud (Long)",
     toneSiren: "Siren",
     toneClassic: "Classic",
     toneDouble: "Double",
     toneSoft: "Soft",
-    soundBlockedHint: "Browsers may block sound until you press (Test) once.",
+    soundBlockedHint: "Tap (Test Sound) to enable alarm",
     backToHome: "Back to Home",
     logout: "Logout",
     loginRequired: "Please login first",
+    on: "ON",
+    off: "OFF",
+    tapToToggle: "Tap to toggle",
   },
   fr: {
     title: "Rappels de Médicaments",
     pageSubtitle: "Gérer vos rappels de médicaments",
     noReminders: "Aucun rappel",
-    addReminder: "Ajouter un rappel",
+    noRemindersSubtitle: "Appuyez sur le bouton ci-dessous pour ajouter un rappel",
+    addReminder: "Ajouter un Rappel",
+    addReminderShort: "Ajouter",
     delete: "Supprimer",
     active: "Actif",
     inactive: "Inactif",
@@ -109,27 +123,33 @@ const translations = {
     updateError: "Erreur de mise à jour",
     notificationPermission: "Veuillez autoriser les notifications",
     days: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
+    daysShort: ["D", "L", "M", "M", "J", "V", "S"],
     everyDay: "Tous les jours",
     alarmSettings: "Paramètres d'alarme",
     sound: "Son",
     tone: "Tonalité",
-    testAlarm: "Tester",
+    testAlarm: "Tester le Son",
     edit: "Modifier",
     toneAlarm: "Fort (Long)",
     toneSiren: "Sirène",
     toneClassic: "Classique",
     toneDouble: "Double",
     toneSoft: "Doux",
-    soundBlockedHint: "Les navigateurs peuvent bloquer le son jusqu'à un clic sur (Tester).",
+    soundBlockedHint: "Appuyez sur (Tester le Son) pour activer l'alarme",
     backToHome: "Retour à l'Accueil",
     logout: "Déconnexion",
     loginRequired: "Veuillez d'abord vous connecter",
+    on: "ON",
+    off: "OFF",
+    tapToToggle: "Appuyez pour basculer",
   },
   es: {
     title: "Recordatorios de Medicamentos",
     pageSubtitle: "Gestiona tus recordatorios de medicamentos",
-    noReminders: "No hay recordatorios aún",
+    noReminders: "Sin recordatorios",
+    noRemindersSubtitle: "Toca el botón de abajo para agregar un recordatorio",
     addReminder: "Agregar Recordatorio",
+    addReminderShort: "Agregar",
     delete: "Eliminar",
     active: "Activo",
     inactive: "Inactivo",
@@ -139,21 +159,25 @@ const translations = {
     updateError: "Error al actualizar recordatorio",
     notificationPermission: "Por favor permite las notificaciones para los recordatorios",
     days: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+    daysShort: ["D", "L", "M", "M", "J", "V", "S"],
     everyDay: "Todos los días",
     alarmSettings: "Configuración de alarma",
     sound: "Sonido",
     tone: "Tono",
-    testAlarm: "Probar",
+    testAlarm: "Probar Sonido",
     edit: "Editar",
     toneAlarm: "Fuerte (Largo)",
     toneSiren: "Sirena",
     toneClassic: "Clásico",
     toneDouble: "Doble",
     toneSoft: "Suave",
-    soundBlockedHint: "Los navegadores pueden bloquear el sonido hasta que presiones (Probar) una vez.",
+    soundBlockedHint: "Toca (Probar Sonido) para activar la alarma",
     backToHome: "Volver al Inicio",
     logout: "Cerrar Sesión",
     loginRequired: "Por favor inicia sesión primero",
+    on: "ON",
+    off: "OFF",
+    tapToToggle: "Toca para activar/desactivar",
   },
 };
 
@@ -534,6 +558,11 @@ export default function Reminders() {
     return `${displayHour}:${minutes} ${period}`;
   };
 
+  const getTimeIcon = (time: string) => {
+    const h = parseInt(time.split(":")[0]);
+    return h >= 6 && h < 18 ? Sun : Moon;
+  };
+
   const saveSoundEnabled = (enabled: boolean) => {
     setSoundEnabled(enabled);
     try {
@@ -564,173 +593,277 @@ export default function Reminders() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
+      <div className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-6">
+          <div className="relative">
+            <div className="w-24 h-24 rounded-full border-4 border-primary/20 animate-pulse"></div>
+            <AlarmClock className="absolute inset-0 m-auto h-12 w-12 text-primary animate-bounce" />
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background" dir={dir}>
-      {/* Header */}
-      <header className="sticky top-0 z-50 glass-card border-b border-border/50">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-soft">
-              <BellRing className="h-5 w-5 text-primary-foreground" />
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5" dir={dir}>
+      {/* Header - Samsung Style */}
+      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border/50 shadow-sm">
+        <div className="container flex h-20 items-center justify-between px-4">
+          <div className="flex items-center gap-4">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/30">
+              <AlarmClock className="h-7 w-7 text-primary-foreground" />
             </div>
             <div className="flex flex-col">
-              <span className="text-lg font-bold text-foreground">{t.title}</span>
-              <span className="text-xs text-muted-foreground">{t.pageSubtitle}</span>
+              <span className="text-xl font-bold text-foreground">{t.title}</span>
+              <span className="text-sm text-muted-foreground">{t.pageSubtitle}</span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <ThemeLanguageToggle />
-            <Button variant="outline" size="sm" onClick={handleLogout} className="gap-2">
-              <LogOut className="h-4 w-4" />
+            <Button 
+              variant="outline" 
+              size="lg" 
+              onClick={handleLogout} 
+              className="gap-2 h-12 px-4 rounded-xl text-base font-medium"
+            >
+              <LogOut className="h-5 w-5" />
               <span className="hidden sm:inline">{t.logout}</span>
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="container pb-20 pt-6">
-        {/* Back Button */}
+      <main className="container pb-32 pt-6 px-4">
+        {/* Back Button - Large for elderly */}
         <Button 
           variant="ghost" 
           onClick={() => navigate("/")}
-          className="mb-6"
+          className="mb-6 h-14 text-lg gap-3 rounded-xl hover:bg-primary/10"
+          size="lg"
         >
-          <ArrowIcon className="h-4 w-4" />
+          <ArrowIcon className="h-6 w-6" />
           {t.backToHome}
         </Button>
 
-        {/* Main Content */}
-        <div className="glass-card rounded-2xl p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-                <Bell className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-foreground">{t.title}</h1>
-                <p className="text-sm text-muted-foreground">{t.pageSubtitle}</p>
-              </div>
+        {/* Alarm Settings Card - Samsung Style */}
+        <div className="mb-8 rounded-3xl bg-gradient-to-br from-card to-card/80 border border-border/50 p-6 shadow-xl">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
+              <Volume2 className="h-7 w-7 text-primary" />
             </div>
-            <Button onClick={() => setDialogOpen(true)} className="gap-2">
-              <Plus className="h-4 w-4" />
-              {t.addReminder}
-            </Button>
+            <div>
+              <h2 className="text-xl font-bold text-foreground">{t.alarmSettings}</h2>
+              <p className="text-sm text-muted-foreground">{t.soundBlockedHint}</p>
+            </div>
           </div>
 
-          {/* Alarm settings */}
-          <div className="mb-6 rounded-xl border border-border/50 bg-muted/20 p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Bell className="h-4 w-4 text-muted-foreground" />
-              <p className="text-sm font-semibold text-foreground">{t.alarmSettings}</p>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {/* Sound Toggle - Large Button */}
+            <button
+              onClick={() => saveSoundEnabled(!soundEnabled)}
+              className={`flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 transition-all duration-300 ${
+                soundEnabled 
+                  ? "bg-primary/10 border-primary text-primary shadow-lg shadow-primary/20" 
+                  : "bg-muted/50 border-muted-foreground/20 text-muted-foreground"
+              }`}
+            >
+              <Volume2 className="h-10 w-10" />
+              <span className="text-lg font-bold">{t.sound}</span>
+              <span className={`text-sm font-medium px-4 py-1 rounded-full ${
+                soundEnabled ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+              }`}>
+                {soundEnabled ? t.on : t.off}
+              </span>
+            </button>
+
+            {/* Tone Selector - Large */}
+            <div className="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-border bg-card">
+              <Music className="h-10 w-10 text-primary" />
+              <span className="text-lg font-bold text-foreground">{t.tone}</span>
+              <Select value={tone} onValueChange={(v) => saveTone(v as Tone)}>
+                <SelectTrigger className="w-full h-12 text-base rounded-xl">
+                  <SelectValue placeholder={t.tone} />
+                </SelectTrigger>
+                <SelectContent className="bg-popover border-border">
+                  <SelectItem value="alarm" className="text-base py-3">{t.toneAlarm}</SelectItem>
+                  <SelectItem value="siren" className="text-base py-3">{t.toneSiren}</SelectItem>
+                  <SelectItem value="double" className="text-base py-3">{t.toneDouble}</SelectItem>
+                  <SelectItem value="classic" className="text-base py-3">{t.toneClassic}</SelectItem>
+                  <SelectItem value="soft" className="text-base py-3">{t.toneSoft}</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center justify-between sm:justify-start gap-3">
-                <div className="flex items-center gap-2">
-                  <Volume2 className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm text-foreground">{t.sound}</span>
-                </div>
-                <Switch checked={soundEnabled} onCheckedChange={saveSoundEnabled} />
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Music className="h-4 w-4 text-muted-foreground" />
-                <Select value={tone} onValueChange={(v) => saveTone(v as Tone)}>
-                  <SelectTrigger className="w-[140px]">
-                    <SelectValue placeholder={t.tone} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="alarm">{t.toneAlarm}</SelectItem>
-                    <SelectItem value="siren">{t.toneSiren}</SelectItem>
-                    <SelectItem value="double">{t.toneDouble}</SelectItem>
-                    <SelectItem value="classic">{t.toneClassic}</SelectItem>
-                    <SelectItem value="soft">{t.toneSoft}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <Button variant="outline" size="sm" onClick={handleTestAlarm} className="gap-2">
-                <Play className="h-4 w-4" />
-                {t.testAlarm}
-              </Button>
-            </div>
-
-            <p className="mt-3 text-xs text-muted-foreground">{t.soundBlockedHint}</p>
+            {/* Test Alarm - Large Button */}
+            <button
+              onClick={handleTestAlarm}
+              className="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-accent bg-accent/10 text-accent-foreground hover:bg-accent/20 transition-all duration-300 active:scale-95"
+            >
+              <Play className="h-10 w-10 text-primary" />
+              <span className="text-lg font-bold">{t.testAlarm}</span>
+              <span className="text-sm text-muted-foreground">{t.tapToToggle}</span>
+            </button>
           </div>
+        </div>
 
-          {reminders.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              <Bell className="h-16 w-16 mx-auto mb-4 opacity-50" />
-              <p className="text-lg">{t.noReminders}</p>
+        {/* Reminders List - Samsung Alarm Style */}
+        {reminders.length === 0 ? (
+          <div className="text-center py-16 px-6">
+            <div className="relative inline-block mb-8">
+              <div className="w-32 h-32 rounded-full bg-primary/10 flex items-center justify-center">
+                <AlarmClock className="h-16 w-16 text-primary/50" />
+              </div>
             </div>
-          ) : (
-            <div className="space-y-3">
-              {reminders.map((reminder) => (
+            <h3 className="text-2xl font-bold text-foreground mb-2">{t.noReminders}</h3>
+            <p className="text-lg text-muted-foreground mb-8">{t.noRemindersSubtitle}</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {reminders.map((reminder) => {
+              const TimeIcon = getTimeIcon(reminder.reminder_time);
+              return (
                 <div
                   key={reminder.id}
-                  className={`flex items-center justify-between p-4 rounded-xl border transition-all ${
-                    reminder.is_active ? "bg-primary/5 border-primary/20" : "bg-muted/50 border-muted opacity-60"
+                  className={`relative overflow-hidden rounded-3xl border-2 transition-all duration-300 ${
+                    reminder.is_active 
+                      ? "bg-gradient-to-r from-card to-primary/5 border-primary/30 shadow-lg shadow-primary/10" 
+                      : "bg-muted/30 border-muted opacity-70"
                   }`}
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                      <Pill className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground">{reminder.medicine_name}</h3>
-                      <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          {formatTime(reminder.reminder_time)}
+                  {/* Main Content - Tappable Area for Toggle */}
+                  <button
+                    onClick={() => toggleReminder(reminder.id, !reminder.is_active)}
+                    className="w-full p-6 text-start focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-3xl"
+                  >
+                    <div className="flex items-center gap-6">
+                      {/* Large Time Display - Samsung Style */}
+                      <div className={`flex flex-col items-center justify-center min-w-[120px] ${
+                        reminder.is_active ? "text-foreground" : "text-muted-foreground"
+                      }`}>
+                        <div className="flex items-center gap-2 mb-1">
+                          <TimeIcon className="h-5 w-5 text-primary" />
+                        </div>
+                        <span className="text-5xl font-light tracking-tight">
+                          {formatTime(reminder.reminder_time).split(" ")[0]}
                         </span>
-                        <span>•</span>
-                        <span>{formatDays(reminder.days_of_week)}</span>
+                        <span className="text-xl font-medium text-primary">
+                          {formatTime(reminder.reminder_time).split(" ")[1]}
+                        </span>
                       </div>
-                      {reminder.dosage && <p className="text-xs text-primary mt-1">{reminder.dosage}</p>}
+
+                      {/* Divider */}
+                      <div className={`w-px h-24 ${reminder.is_active ? "bg-primary/30" : "bg-muted"}`}></div>
+
+                      {/* Medicine Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${
+                            reminder.is_active ? "bg-primary/20" : "bg-muted"
+                          }`}>
+                            <Pill className={`h-6 w-6 ${reminder.is_active ? "text-primary" : "text-muted-foreground"}`} />
+                          </div>
+                          <h3 className={`text-2xl font-bold truncate ${
+                            reminder.is_active ? "text-foreground" : "text-muted-foreground"
+                          }`}>
+                            {reminder.medicine_name}
+                          </h3>
+                        </div>
+                        
+                        {/* Days Display */}
+                        <div className="flex flex-wrap gap-2 mb-2">
+                          {reminder.days_of_week.length === 7 ? (
+                            <span className={`text-base font-medium px-3 py-1 rounded-full ${
+                              reminder.is_active ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"
+                            }`}>
+                              {t.everyDay}
+                            </span>
+                          ) : (
+                            t.daysShort.map((day, index) => (
+                              <span
+                                key={index}
+                                className={`w-9 h-9 flex items-center justify-center rounded-full text-sm font-bold ${
+                                  reminder.days_of_week.includes(index)
+                                    ? reminder.is_active 
+                                      ? "bg-primary text-primary-foreground" 
+                                      : "bg-muted-foreground/50 text-background"
+                                    : "bg-muted/50 text-muted-foreground"
+                                }`}
+                              >
+                                {day}
+                              </span>
+                            ))
+                          )}
+                        </div>
+
+                        {/* Dosage */}
+                        {reminder.dosage && (
+                          <p className={`text-base ${reminder.is_active ? "text-primary" : "text-muted-foreground"}`}>
+                            {reminder.dosage}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Status Indicator - Large */}
+                      <div className="flex flex-col items-center gap-2">
+                        <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
+                          reminder.is_active 
+                            ? "bg-primary shadow-lg shadow-primary/30" 
+                            : "bg-muted-foreground/30"
+                        }`}>
+                          {reminder.is_active ? (
+                            <Power className="h-8 w-8 text-primary-foreground" />
+                          ) : (
+                            <PowerOff className="h-8 w-8 text-muted-foreground" />
+                          )}
+                        </div>
+                        <span className={`text-sm font-bold ${
+                          reminder.is_active ? "text-primary" : "text-muted-foreground"
+                        }`}>
+                          {reminder.is_active ? t.on : t.off}
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  </button>
 
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
+                  {/* Action Buttons - Large and Clear */}
+                  <div className="flex border-t border-border/50">
+                    <button
                       onClick={() => openEdit(reminder)}
-                      aria-label={t.edit}
-                      className="text-muted-foreground hover:text-foreground"
+                      className="flex-1 flex items-center justify-center gap-3 py-4 text-primary hover:bg-primary/10 transition-colors"
                     >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-
-                    <Switch
-                      checked={reminder.is_active}
-                      onCheckedChange={(checked) => toggleReminder(reminder.id, checked)}
-                    />
-                    <Button
-                      variant="ghost"
-                      size="icon"
+                      <Pencil className="h-6 w-6" />
+                      <span className="text-lg font-medium">{t.edit}</span>
+                    </button>
+                    <div className="w-px bg-border/50"></div>
+                    <button
                       onClick={() => deleteReminder(reminder.id)}
-                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                      className="flex-1 flex items-center justify-center gap-3 py-4 text-destructive hover:bg-destructive/10 transition-colors"
                     >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                      <Trash2 className="h-6 w-6" />
+                      <span className="text-lg font-medium">{t.delete}</span>
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </main>
 
+      {/* Floating Add Button - Samsung FAB Style */}
+      <div className="fixed bottom-8 inset-x-0 px-4 z-50">
+        <Button 
+          onClick={() => setDialogOpen(true)} 
+          size="xl"
+          className="w-full max-w-md mx-auto flex items-center justify-center gap-4 h-16 rounded-2xl shadow-xl shadow-primary/30 text-xl font-bold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
+        >
+          <Plus className="h-7 w-7" />
+          {t.addReminder}
+        </Button>
+      </div>
+
       {/* Footer */}
-      <footer className="border-t border-border bg-card/50 py-6">
+      <footer className="border-t border-border bg-card/50 py-6 mb-24">
         <div className="container text-center">
           <p className="text-sm text-muted-foreground">
             {language === "ar" ? "صيدلي البيت" : "PHARMA HOME"} © {new Date().getFullYear()}
