@@ -18,7 +18,8 @@ import {
   CheckCircle2,
   Zap,
   Wallet,
-  TrendingDown
+  TrendingDown,
+  FileText
 } from "lucide-react";
 
 const About = () => {
@@ -66,6 +67,11 @@ const About = () => {
       icon: <Pill className="h-8 w-8" />,
       titleKey: "featureAlternatives",
       descKey: "featureAlternativesDesc"
+    },
+    {
+      icon: <FileText className="h-8 w-8" />,
+      titleKey: "featurePrescriptions",
+      descKey: "featurePrescriptionsDesc"
     }
   ];
 
