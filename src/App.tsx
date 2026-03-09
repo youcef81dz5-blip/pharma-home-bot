@@ -10,6 +10,7 @@ import Auth from "./pages/Auth";
 import Inventory from "./pages/Inventory";
 import About from "./pages/About";
 import Reminders from "./pages/Reminders";
+import Prescriptions from "./pages/Prescriptions";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
