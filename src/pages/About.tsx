@@ -18,7 +18,8 @@ import {
   CheckCircle2,
   Zap,
   Wallet,
-  TrendingDown
+  TrendingDown,
+  FileText
 } from "lucide-react";
 
 const About = () => {
