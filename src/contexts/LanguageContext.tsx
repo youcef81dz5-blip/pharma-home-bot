@@ -37,6 +37,12 @@ export const translations: Translations = {
     fr: "Rappels",
     es: "Recordatorios",
   },
+  prescriptions: {
+    ar: "الوصفات",
+    en: "Prescriptions",
+    fr: "Ordonnances",
+    es: "Recetas",
+  },
   // Hero Section
   heroTitle: {
     ar: "حلل مكونات أدويتك بالذكاء الاصطناعي",
