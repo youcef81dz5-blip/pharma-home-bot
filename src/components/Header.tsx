@@ -21,6 +21,12 @@ export function Header() {
         </div>
         <div className="flex items-center gap-2">
           <ThemeLanguageToggle />
+          <Link to="/prescriptions">
+            <Button variant="outline" size="sm" className="gap-2">
+              <FileText className="h-4 w-4" />
+              <span className="hidden sm:inline">{t("prescriptions")}</span>
+            </Button>
+          </Link>
           <Link to="/reminders">
             <Button variant="outline" size="sm" className="gap-2">
               <BellRing className="h-4 w-4" />
