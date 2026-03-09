@@ -62,8 +62,17 @@ const Index = () => {
       <main className="container pb-20 pt-6">
         {!result ? (
           <>
-            {/* About App Button */}
-            <div className="flex justify-center mb-4">
+            {/* Quick Actions */}
+            <div className="flex flex-wrap justify-center gap-3 mb-4">
+              <Button 
+                variant="hero" 
+                size="lg"
+                onClick={() => navigate("/prescriptions")}
+                className="gap-3 text-base"
+              >
+                <FileText className="h-5 w-5" />
+                {t("prescriptions")}
+              </Button>
               <Button 
                 variant="outline" 
                 onClick={() => navigate("/about")}

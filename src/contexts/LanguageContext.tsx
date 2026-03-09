@@ -682,6 +682,18 @@ export const translations: Translations = {
     fr: "Trouvez des alternatives aux médicaments indisponibles grâce à l'IA avec tous les détails",
     es: "Encuentra alternativas para medicamentos no disponibles usando IA con detalles completos",
   },
+  featurePrescriptions: {
+    ar: "تحليل الوصفات الطبية",
+    en: "Prescription Analysis",
+    fr: "Analyse des Ordonnances",
+    es: "Análisis de Recetas Médicas",
+  },
+  featurePrescriptionsDesc: {
+    ar: "صوّر وصفتك الطبية المكتوبة بخط اليد والذكاء الاصطناعي يفك رموزها ويستخرج الأدوية والجرعات مع تشخيص محتمل وتفاصيل كل دواء",
+    en: "Photograph your handwritten prescription and AI decodes it, extracting medicines, dosages, with a possible diagnosis and details for each medicine",
+    fr: "Photographiez votre ordonnance manuscrite et l'IA la déchiffre, extrait les médicaments, les dosages, avec un diagnostic possible et les détails de chaque médicament",
+    es: "Fotografía tu receta manuscrita y la IA la descifra, extrayendo medicamentos, dosis, con un diagnóstico posible y detalles de cada medicamento",
+  },
   howItWorks: {
     ar: "كيف يعمل التطبيق؟",
     en: "How Does It Work?",
