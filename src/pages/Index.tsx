@@ -6,7 +6,7 @@ import { AnalysisResults } from "@/components/AnalysisResults";
 import { analyzeImage } from "@/lib/gemini";
 import { AnalysisResult } from "@/types/analysis";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowRight, ArrowLeft, Sparkles, Info } from "lucide-react";
+import { ArrowRight, ArrowLeft, Sparkles, Info, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
