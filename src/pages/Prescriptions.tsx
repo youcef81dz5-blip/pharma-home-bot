@@ -74,6 +74,11 @@ const labels = {
     error: "خطأ في التحليل",
     success: "تم تحليل الوصفة بنجاح",
     tip: "💡 نصيحة: صوّر الوصفة في إضاءة جيدة وتأكد أن الخط واضح",
+    savePrescription: "حفظ الوصفة",
+    saving: "جاري الحفظ...",
+    saved: "تم حفظ الوصفة بنجاح",
+    saveError: "خطأ في حفظ الوصفة",
+    loginToSave: "سجل دخولك لحفظ الوصفة",
   },
   en: {
     title: "Prescriptions",
