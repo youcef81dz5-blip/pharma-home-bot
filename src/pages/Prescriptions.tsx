@@ -282,6 +282,36 @@ const Prescriptions = () => {
     setResult(null);
     setExpandedMedicine(null);
     setShowPrescriptionImage(false);
+    setIsSaved(false);
+  };
+
+  const handleSave = async () => {
+    if (!result) return;
+    setIsSaving(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({ variant: "destructive", title: l.loginToSave });
+        return;
+      }
+      const { error } = await supabase.from("saved_prescriptions" as any).insert({
+        user_id: user.id,
+        prescription_date: result.prescription_date,
+        doctor_name: result.doctor_notes || null,
+        diagnosis_summary: result.diagnosis_summary,
+        general_advice: result.general_advice,
+        doctor_notes: result.doctor_notes,
+        medicines: result.medicines,
+      } as any);
+      if (error) throw error;
+      setIsSaved(true);
+      toast({ title: l.saved });
+    } catch (error) {
+      console.error("Save error:", error);
+      toast({ variant: "destructive", title: l.saveError });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const getConfidenceBadge = (confidence: string) => {
