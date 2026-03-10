@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Pill, Package, BellRing, FileText } from "lucide-react";
+import { Pill, Package, BellRing } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeLanguageToggle } from "@/components/ThemeLanguageToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
