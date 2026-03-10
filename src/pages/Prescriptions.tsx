@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Camera, Upload, FileText, Sparkles, ArrowRight, ArrowLeft,
   Pill, AlertTriangle, Clock, CalendarDays, Stethoscope,
-  ChevronDown, ChevronUp, Shield, Info, X, ZoomIn
+  ChevronDown, ChevronUp, Shield, Info, X, ZoomIn, Save, Check
 } from "lucide-react";
 
 interface PrescriptionMedicine {
