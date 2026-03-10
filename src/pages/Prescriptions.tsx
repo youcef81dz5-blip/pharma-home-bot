@@ -415,17 +415,29 @@ const Prescriptions = () => {
         ) : (
           <div className="space-y-6 fade-in-up">
             {/* Top Actions */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <Button variant="outline" size="sm" onClick={handleReset} className="gap-2">
                 <ArrowIcon className="w-4 h-4" />
                 {l.newPrescription}
               </Button>
-              {imagePreview && (
-                <Button variant="ghost" size="sm" onClick={() => setShowPrescriptionImage(!showPrescriptionImage)} className="gap-2">
-                  <ZoomIn className="w-4 h-4" />
-                  {l.backToPrescription}
+              <div className="flex gap-2">
+                {imagePreview && (
+                  <Button variant="ghost" size="sm" onClick={() => setShowPrescriptionImage(!showPrescriptionImage)} className="gap-2">
+                    <ZoomIn className="w-4 h-4" />
+                    {l.backToPrescription}
+                  </Button>
+                )}
+                <Button
+                  size="sm"
+                  onClick={handleSave}
+                  disabled={isSaving || isSaved}
+                  className="gap-2"
+                  variant={isSaved ? "outline" : "default"}
+                >
+                  {isSaved ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
+                  {isSaving ? l.saving : isSaved ? l.saved : l.savePrescription}
                 </Button>
-              )}
+              </div>
             </div>
 
             {/* Show prescription image */}
