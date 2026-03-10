@@ -118,6 +118,11 @@ const labels = {
     error: "Analysis Error",
     success: "Prescription analyzed successfully",
     tip: "💡 Tip: Photograph the prescription in good lighting and ensure the text is clear",
+    savePrescription: "Save Prescription",
+    saving: "Saving...",
+    saved: "Prescription saved successfully",
+    saveError: "Error saving prescription",
+    loginToSave: "Log in to save prescription",
   },
   fr: {
     title: "Ordonnances",
