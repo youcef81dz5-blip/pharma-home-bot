@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Camera, Upload, FileText, Sparkles, ArrowRight, ArrowLeft,
   Pill, AlertTriangle, Clock, CalendarDays, Stethoscope,
-  ChevronDown, ChevronUp, Shield, Info, X, ZoomIn
+  ChevronDown, ChevronUp, Shield, Info, X, ZoomIn, Save, Check
 } from "lucide-react";
 
 interface PrescriptionMedicine {
@@ -74,6 +74,11 @@ const labels = {
     error: "خطأ في التحليل",
     success: "تم تحليل الوصفة بنجاح",
     tip: "💡 نصيحة: صوّر الوصفة في إضاءة جيدة وتأكد أن الخط واضح",
+    savePrescription: "حفظ الوصفة",
+    saving: "جاري الحفظ...",
+    saved: "تم حفظ الوصفة بنجاح",
+    saveError: "خطأ في حفظ الوصفة",
+    loginToSave: "سجل دخولك لحفظ الوصفة",
   },
   en: {
     title: "Prescriptions",
@@ -113,6 +118,11 @@ const labels = {
     error: "Analysis Error",
     success: "Prescription analyzed successfully",
     tip: "💡 Tip: Photograph the prescription in good lighting and ensure the text is clear",
+    savePrescription: "Save Prescription",
+    saving: "Saving...",
+    saved: "Prescription saved successfully",
+    saveError: "Error saving prescription",
+    loginToSave: "Log in to save prescription",
   },
   fr: {
     title: "Ordonnances",
@@ -152,6 +162,11 @@ const labels = {
     error: "Erreur d'analyse",
     success: "Ordonnance analysée avec succès",
     tip: "💡 Conseil: Photographiez l'ordonnance avec un bon éclairage",
+    savePrescription: "Sauvegarder l'ordonnance",
+    saving: "Sauvegarde en cours...",
+    saved: "Ordonnance sauvegardée avec succès",
+    saveError: "Erreur lors de la sauvegarde",
+    loginToSave: "Connectez-vous pour sauvegarder",
   },
   es: {
     title: "Recetas Médicas",
@@ -191,6 +206,11 @@ const labels = {
     error: "Error de análisis",
     success: "Receta analizada con éxito",
     tip: "💡 Consejo: Fotografía la receta con buena iluminación",
+    savePrescription: "Guardar Receta",
+    saving: "Guardando...",
+    saved: "Receta guardada con éxito",
+    saveError: "Error al guardar la receta",
+    loginToSave: "Inicia sesión para guardar",
   },
 };
 
@@ -206,6 +226,8 @@ const Prescriptions = () => {
   const [expandedMedicine, setExpandedMedicine] = useState<number | null>(null);
   const [showPrescriptionImage, setShowPrescriptionImage] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -260,6 +282,36 @@ const Prescriptions = () => {
     setResult(null);
     setExpandedMedicine(null);
     setShowPrescriptionImage(false);
+    setIsSaved(false);
+  };
+
+  const handleSave = async () => {
+    if (!result) return;
+    setIsSaving(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({ variant: "destructive", title: l.loginToSave });
+        return;
+      }
+      const { error } = await supabase.from("saved_prescriptions" as any).insert({
+        user_id: user.id,
+        prescription_date: result.prescription_date,
+        doctor_name: result.doctor_notes || null,
+        diagnosis_summary: result.diagnosis_summary,
+        general_advice: result.general_advice,
+        doctor_notes: result.doctor_notes,
+        medicines: result.medicines,
+      } as any);
+      if (error) throw error;
+      setIsSaved(true);
+      toast({ title: l.saved });
+    } catch (error) {
+      console.error("Save error:", error);
+      toast({ variant: "destructive", title: l.saveError });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const getConfidenceBadge = (confidence: string) => {
@@ -363,17 +415,29 @@ const Prescriptions = () => {
         ) : (
           <div className="space-y-6 fade-in-up">
             {/* Top Actions */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <Button variant="outline" size="sm" onClick={handleReset} className="gap-2">
                 <ArrowIcon className="w-4 h-4" />
                 {l.newPrescription}
               </Button>
-              {imagePreview && (
-                <Button variant="ghost" size="sm" onClick={() => setShowPrescriptionImage(!showPrescriptionImage)} className="gap-2">
-                  <ZoomIn className="w-4 h-4" />
-                  {l.backToPrescription}
+              <div className="flex gap-2">
+                {imagePreview && (
+                  <Button variant="ghost" size="sm" onClick={() => setShowPrescriptionImage(!showPrescriptionImage)} className="gap-2">
+                    <ZoomIn className="w-4 h-4" />
+                    {l.backToPrescription}
+                  </Button>
+                )}
+                <Button
+                  size="sm"
+                  onClick={handleSave}
+                  disabled={isSaving || isSaved}
+                  className="gap-2"
+                  variant={isSaved ? "outline" : "default"}
+                >
+                  {isSaved ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
+                  {isSaving ? l.saving : isSaved ? l.saved : l.savePrescription}
                 </Button>
-              )}
+              </div>
             </div>
 
             {/* Show prescription image */}

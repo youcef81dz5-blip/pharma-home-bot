@@ -109,6 +109,48 @@ export type Database = {
         }
         Relationships: []
       }
+      saved_prescriptions: {
+        Row: {
+          created_at: string
+          diagnosis_summary: string | null
+          doctor_name: string | null
+          doctor_notes: string | null
+          general_advice: string | null
+          id: string
+          image_url: string | null
+          institution: string | null
+          medicines: Json
+          prescription_date: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          diagnosis_summary?: string | null
+          doctor_name?: string | null
+          doctor_notes?: string | null
+          general_advice?: string | null
+          id?: string
+          image_url?: string | null
+          institution?: string | null
+          medicines?: Json
+          prescription_date?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          diagnosis_summary?: string | null
+          doctor_name?: string | null
+          doctor_notes?: string | null
+          general_advice?: string | null
+          id?: string
+          image_url?: string | null
+          institution?: string | null
+          medicines?: Json
+          prescription_date?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
