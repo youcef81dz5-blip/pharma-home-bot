@@ -206,6 +206,11 @@ const labels = {
     error: "Error de análisis",
     success: "Receta analizada con éxito",
     tip: "💡 Consejo: Fotografía la receta con buena iluminación",
+    savePrescription: "Guardar Receta",
+    saving: "Guardando...",
+    saved: "Receta guardada con éxito",
+    saveError: "Error al guardar la receta",
+    loginToSave: "Inicia sesión para guardar",
   },
 };
 
