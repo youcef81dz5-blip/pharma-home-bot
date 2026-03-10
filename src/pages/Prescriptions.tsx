@@ -162,6 +162,11 @@ const labels = {
     error: "Erreur d'analyse",
     success: "Ordonnance analysée avec succès",
     tip: "💡 Conseil: Photographiez l'ordonnance avec un bon éclairage",
+    savePrescription: "Sauvegarder l'ordonnance",
+    saving: "Sauvegarde en cours...",
+    saved: "Ordonnance sauvegardée avec succès",
+    saveError: "Erreur lors de la sauvegarde",
+    loginToSave: "Connectez-vous pour sauvegarder",
   },
   es: {
     title: "Recetas Médicas",
