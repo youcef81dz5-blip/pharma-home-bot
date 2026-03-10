@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Pill, Package, BellRing, FileText } from "lucide-react";
+import { Pill, Package, BellRing } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeLanguageToggle } from "@/components/ThemeLanguageToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -19,24 +19,16 @@ export function Header() {
             <span className="text-xs text-muted-foreground">{t("appSubtitle")}</span>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <ThemeLanguageToggle />
-          <Link to="/prescriptions">
-            <Button variant="outline" size="sm" className="gap-2">
-              <FileText className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("prescriptions")}</span>
-            </Button>
-          </Link>
           <Link to="/reminders">
-            <Button variant="outline" size="sm" className="gap-2">
+            <Button variant="outline" size="icon" className="h-9 w-9">
               <BellRing className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("reminders")}</span>
             </Button>
           </Link>
           <Link to="/inventory">
-            <Button variant="outline" size="sm" className="gap-2">
+            <Button variant="outline" size="icon" className="h-9 w-9">
               <Package className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("inventory")}</span>
             </Button>
           </Link>
         </div>
