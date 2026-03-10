@@ -226,6 +226,8 @@ const Prescriptions = () => {
   const [expandedMedicine, setExpandedMedicine] = useState<number | null>(null);
   const [showPrescriptionImage, setShowPrescriptionImage] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
