@@ -81,7 +81,7 @@ const labels = {
     loginToSave: "سجل دخولك لحفظ الوصفة",
   },
   en: {
-    title: "Prescriptions",
+    title: "Analyze Your Prescription",
     subtitle: "Analyze your prescription with AI",
     uploadTitle: "Upload Prescription Image",
     uploadDesc: "Take a photo or upload an image of your handwritten prescription",
