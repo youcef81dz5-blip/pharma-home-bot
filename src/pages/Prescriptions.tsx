@@ -176,7 +176,7 @@ const labels = {
     takePhoto: "Tomar Foto",
     uploadImage: "Subir Imagen",
     dragDrop: "O arrastra y suelta la imagen aquí",
-    analyze: "Analizar Receta",
+    analyze: "Analiza tu Receta",
     analyzing: "Analizando receta...",
     analyzingDesc: "La IA está leyendo la escritura e identificando medicamentos",
     medicinesFound: "Medicamentos Encontrados",
