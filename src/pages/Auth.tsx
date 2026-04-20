@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ThemeLanguageToggle } from "@/components/ThemeLanguageToggle";
-import { Pill, Mail, Lock } from "lucide-react";
+import { Pill, Mail, Lock, ArrowLeft, ArrowRight, Home } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -98,7 +99,15 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4" dir={dir}>
-      <div className="absolute top-4 right-4">
+      <div className={`absolute top-4 ${dir === "rtl" ? "right-4" : "left-4"}`}>
+        <Link to="/">
+          <Button variant="outline" size="sm" className="gap-2">
+            {dir === "rtl" ? <ArrowRight className="h-4 w-4" /> : <ArrowLeft className="h-4 w-4" />}
+            <Home className="h-4 w-4" />
+          </Button>
+        </Link>
+      </div>
+      <div className={`absolute top-4 ${dir === "rtl" ? "left-4" : "right-4"}`}>
         <ThemeLanguageToggle />
       </div>
       
