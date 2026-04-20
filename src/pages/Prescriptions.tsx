@@ -125,7 +125,7 @@ const labels = {
     loginToSave: "Log in to save prescription",
   },
   fr: {
-    title: "Ordonnances",
+    title: "Analysez votre ordonnance",
     subtitle: "Analysez votre ordonnance avec l'IA",
     uploadTitle: "Télécharger l'image de l'ordonnance",
     uploadDesc: "Prenez une photo ou téléchargez une image de votre ordonnance manuscrite",
