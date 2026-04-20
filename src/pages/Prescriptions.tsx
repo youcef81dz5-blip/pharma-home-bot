@@ -360,15 +360,27 @@ const Prescriptions = () => {
                     <h3 className="text-lg font-semibold text-foreground">{l.uploadTitle}</h3>
                     <p className="text-sm text-muted-foreground mt-1">{l.uploadDesc}</p>
                   </div>
-                  <div className="flex gap-3">
-                    <Button onClick={() => cameraInputRef.current?.click()} className="gap-2" size="lg">
-                      <Camera className="w-5 h-5" />
-                      {l.takePhoto}
-                    </Button>
-                    <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="gap-2" size="lg">
-                      <Upload className="w-5 h-5" />
-                      {l.uploadImage}
-                    </Button>
+                  <div className="grid grid-cols-2 gap-3 w-full max-w-xs">
+                    <button
+                      onClick={() => cameraInputRef.current?.click()}
+                      className="group flex flex-col items-center gap-2 rounded-2xl bg-primary p-4 shadow-soft transition-transform active:scale-95 hover:scale-[1.02]"
+                      aria-label={l.takePhoto}
+                    >
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-foreground/20">
+                        <Camera className="w-6 h-6 text-primary-foreground" />
+                      </div>
+                      <span className="text-sm font-semibold text-primary-foreground">{l.takePhoto}</span>
+                    </button>
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="group flex flex-col items-center gap-2 rounded-2xl bg-card border-2 border-border p-4 shadow-soft transition-transform active:scale-95 hover:scale-[1.02] hover:border-primary/50"
+                      aria-label={l.uploadImage}
+                    >
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                        <Upload className="w-6 h-6 text-primary" />
+                      </div>
+                      <span className="text-sm font-semibold text-foreground">{l.uploadImage}</span>
+                    </button>
                   </div>
                   <p className="text-xs text-muted-foreground">{l.dragDrop}</p>
                   <p className="text-xs text-muted-foreground/70">{l.tip}</p>
