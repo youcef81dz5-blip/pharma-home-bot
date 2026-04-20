@@ -88,7 +88,7 @@ const labels = {
     takePhoto: "Take Photo",
     uploadImage: "Upload Image",
     dragDrop: "Or drag and drop image here",
-    analyze: "Analyze Prescription",
+    analyze: "Analyze Your Prescription",
     analyzing: "Analyzing prescription...",
     analyzingDesc: "AI is reading handwriting and identifying medicines",
     medicinesFound: "Medicines Found",
