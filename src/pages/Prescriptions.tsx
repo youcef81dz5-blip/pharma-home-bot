@@ -44,7 +44,7 @@ const labels = {
     takePhoto: "التقط صورة",
     uploadImage: "ارفع صورة",
     dragDrop: "أو اسحب وأفلت الصورة هنا",
-    analyze: "تحليل الوصفة",
+    analyze: "حلل وصفتك",
     analyzing: "جاري تحليل الوصفة الطبية...",
     analyzingDesc: "الذكاء الاصطناعي يقرأ خط اليد ويحدد الأدوية",
     medicinesFound: "الأدوية المكتشفة",
