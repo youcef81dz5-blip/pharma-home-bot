@@ -37,7 +37,7 @@ interface PrescriptionResult {
 
 const labels = {
   ar: {
-    title: "الوصفات الطبية",
+    title: "حلل وصفتك",
     subtitle: "حلل وصفتك الطبية بالذكاء الاصطناعي",
     uploadTitle: "ارفع صورة الوصفة الطبية",
     uploadDesc: "التقط صورة أو ارفع صورة لوصفتك الطبية المكتوبة بخط اليد",
@@ -81,7 +81,7 @@ const labels = {
     loginToSave: "سجل دخولك لحفظ الوصفة",
   },
   en: {
-    title: "Prescriptions",
+    title: "Analyze Your Prescription",
     subtitle: "Analyze your prescription with AI",
     uploadTitle: "Upload Prescription Image",
     uploadDesc: "Take a photo or upload an image of your handwritten prescription",
@@ -125,7 +125,7 @@ const labels = {
     loginToSave: "Log in to save prescription",
   },
   fr: {
-    title: "Ordonnances",
+    title: "Analysez votre ordonnance",
     subtitle: "Analysez votre ordonnance avec l'IA",
     uploadTitle: "Télécharger l'image de l'ordonnance",
     uploadDesc: "Prenez une photo ou téléchargez une image de votre ordonnance manuscrite",
@@ -169,7 +169,7 @@ const labels = {
     loginToSave: "Connectez-vous pour sauvegarder",
   },
   es: {
-    title: "Recetas Médicas",
+    title: "Analiza tu Receta",
     subtitle: "Analiza tu receta con IA",
     uploadTitle: "Subir Imagen de Receta",
     uploadDesc: "Toma una foto o sube una imagen de tu receta manuscrita",
@@ -360,15 +360,27 @@ const Prescriptions = () => {
                     <h3 className="text-lg font-semibold text-foreground">{l.uploadTitle}</h3>
                     <p className="text-sm text-muted-foreground mt-1">{l.uploadDesc}</p>
                   </div>
-                  <div className="flex gap-3">
-                    <Button onClick={() => cameraInputRef.current?.click()} className="gap-2" size="lg">
-                      <Camera className="w-5 h-5" />
-                      {l.takePhoto}
-                    </Button>
-                    <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="gap-2" size="lg">
-                      <Upload className="w-5 h-5" />
-                      {l.uploadImage}
-                    </Button>
+                  <div className="grid grid-cols-2 gap-3 w-full max-w-xs">
+                    <button
+                      onClick={() => cameraInputRef.current?.click()}
+                      className="group flex flex-col items-center gap-2 rounded-2xl bg-primary p-4 shadow-soft transition-transform active:scale-95 hover:scale-[1.02]"
+                      aria-label={l.takePhoto}
+                    >
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-foreground/20">
+                        <Camera className="w-6 h-6 text-primary-foreground" />
+                      </div>
+                      <span className="text-sm font-semibold text-primary-foreground">{l.takePhoto}</span>
+                    </button>
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="group flex flex-col items-center gap-2 rounded-2xl bg-card border-2 border-border p-4 shadow-soft transition-transform active:scale-95 hover:scale-[1.02] hover:border-primary/50"
+                      aria-label={l.uploadImage}
+                    >
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                        <Upload className="w-6 h-6 text-primary" />
+                      </div>
+                      <span className="text-sm font-semibold text-foreground">{l.uploadImage}</span>
+                    </button>
                   </div>
                   <p className="text-xs text-muted-foreground">{l.dragDrop}</p>
                   <p className="text-xs text-muted-foreground/70">{l.tip}</p>
