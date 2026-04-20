@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ThemeLanguageToggle } from "@/components/ThemeLanguageToggle";
-import { Pill, Mail, Lock } from "lucide-react";
+import { Pill, Mail, Lock, ArrowLeft, ArrowRight, Home } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
