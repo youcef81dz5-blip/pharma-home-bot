@@ -169,7 +169,7 @@ const labels = {
     loginToSave: "Connectez-vous pour sauvegarder",
   },
   es: {
-    title: "Recetas Médicas",
+    title: "Analiza tu Receta",
     subtitle: "Analiza tu receta con IA",
     uploadTitle: "Subir Imagen de Receta",
     uploadDesc: "Toma una foto o sube una imagen de tu receta manuscrita",
