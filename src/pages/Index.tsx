@@ -6,7 +6,7 @@ import { AnalysisResults } from "@/components/AnalysisResults";
 import { analyzeImage } from "@/lib/gemini";
 import { AnalysisResult } from "@/types/analysis";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowRight, ArrowLeft, Sparkles, Info, FileText } from "lucide-react";
+import { ArrowRight, ArrowLeft, Sparkles, Info, FileText, Package, BellRing } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
@@ -62,25 +62,28 @@ const Index = () => {
       <main className="container pb-20 pt-6">
         {!result ? (
           <>
-            {/* Quick Actions */}
-            <div className="flex flex-wrap justify-center gap-3 mb-4">
-              <Button 
-                variant="hero" 
-                size="lg"
-                onClick={() => navigate("/prescriptions")}
-                className="gap-3 text-base"
-              >
-                <FileText className="h-5 w-5" />
-                {t("prescriptions")}
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => navigate("/about")}
-                className="gap-2"
-              >
-                <Info className="h-4 w-4" />
-                {t("aboutApp")}
-              </Button>
+            {/* Quick Actions - iOS-style app grid */}
+            <div className="mx-auto mb-6 grid max-w-md grid-cols-4 gap-3 sm:gap-4">
+              {[
+                { to: "/prescriptions", icon: FileText, label: t("prescriptions"), gradient: "from-primary to-primary/70" },
+                { to: "/inventory", icon: Package, label: t("inventory"), gradient: "from-accent to-accent/70" },
+                { to: "/reminders", icon: BellRing, label: t("reminders"), gradient: "from-secondary to-secondary/70" },
+                { to: "/about", icon: Info, label: t("aboutApp"), gradient: "from-muted-foreground/80 to-muted-foreground/50" },
+              ].map(({ to, icon: Icon, label, gradient }) => (
+                <button
+                  key={to}
+                  onClick={() => navigate(to)}
+                  className="group flex flex-col items-center gap-1.5 focus:outline-none"
+                  aria-label={label}
+                >
+                  <div className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${gradient} shadow-soft transition-transform duration-200 group-hover:scale-105 group-active:scale-95 sm:h-16 sm:w-16`}>
+                    <Icon className="h-6 w-6 text-primary-foreground sm:h-7 sm:w-7" />
+                  </div>
+                  <span className="text-[11px] font-medium text-foreground/80 sm:text-xs line-clamp-1">
+                    {label}
+                  </span>
+                </button>
+              ))}
             </div>
 
             <HeroSection />
