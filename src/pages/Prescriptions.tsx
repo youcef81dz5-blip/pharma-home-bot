@@ -37,7 +37,7 @@ interface PrescriptionResult {
 
 const labels = {
   ar: {
-    title: "الوصفات الطبية",
+    title: "حلل وصفتك",
     subtitle: "حلل وصفتك الطبية بالذكاء الاصطناعي",
     uploadTitle: "ارفع صورة الوصفة الطبية",
     uploadDesc: "التقط صورة أو ارفع صورة لوصفتك الطبية المكتوبة بخط اليد",
