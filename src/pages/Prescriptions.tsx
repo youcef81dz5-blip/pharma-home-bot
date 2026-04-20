@@ -132,7 +132,7 @@ const labels = {
     takePhoto: "Prendre une Photo",
     uploadImage: "Télécharger",
     dragDrop: "Ou glissez-déposez l'image ici",
-    analyze: "Analyser l'ordonnance",
+    analyze: "Analysez votre ordonnance",
     analyzing: "Analyse de l'ordonnance en cours...",
     analyzingDesc: "L'IA lit l'écriture manuscrite et identifie les médicaments",
     medicinesFound: "Médicaments Trouvés",
